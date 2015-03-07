@@ -13,6 +13,7 @@
 		3E39581C1AA8F2C5007925EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581B1AA8F2C5007925EA /* Images.xcassets */; };
 		3E39581F1AA8F2C5007925EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581D1AA8F2C5007925EA /* LaunchScreen.xib */; };
 		3E39582B1AA8F2C5007925EA /* SpritelyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */; };
+		BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		3E3958241AA8F2C5007925EA /* SpritelyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpritelyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E3958291AA8F2C5007925EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpritelyTests.swift; sourceTree = "<group>"; };
+		BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchEnabledShapeNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		3E3958111AA8F2C5007925EA /* Spritely */ = {
 			isa = PBXGroup;
 			children = (
+				BE7E54521AAACF3F00DACDE6 /* components */,
 				3E3958141AA8F2C5007925EA /* AppDelegate.swift */,
 				3E3958161AA8F2C5007925EA /* ViewController.swift */,
 				3E3958181AA8F2C5007925EA /* Main.storyboard */,
@@ -110,6 +113,14 @@
 				3E3958291AA8F2C5007925EA /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BE7E54521AAACF3F00DACDE6 /* components */ = {
+			isa = PBXGroup;
+			children = (
+				BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */,
+			);
+			name = components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */,
 				3E3958171AA8F2C5007925EA /* ViewController.swift in Sources */,
 				3E3958151AA8F2C5007925EA /* AppDelegate.swift in Sources */,
 			);
@@ -407,6 +419,7 @@
 				3E3958301AA8F2C5007925EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3E3958311AA8F2C5007925EA /* Build configuration list for PBXNativeTarget "SpritelyTests" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +428,7 @@
 				3E3958331AA8F2C5007925EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

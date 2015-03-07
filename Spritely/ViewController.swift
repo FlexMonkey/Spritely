@@ -9,9 +9,13 @@
 import UIKit
 import SpriteKit
 
-class ViewController: UIViewController, SKPhysicsContactDelegate
+class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate
 {
     let skView = SKView()
+ 
+    let floorCategoryBitMask: UInt32 =  0b000001
+    let ballCategoryBitMask: UInt32 =   0xb10001
+    let boxCategoryBitMask: UInt32 =    0b001111
     
     let node = SKShapeNode(circleOfRadius: 20)
     let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
@@ -22,6 +26,15 @@ class ViewController: UIViewController, SKPhysicsContactDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        let panHandler = UIPanGestureRecognizer(target: self, action: "panHandler:")
+        view.addGestureRecognizer(panHandler)
+        
+        let tapGestureRecogniser = UITapGestureRecognizer(target: self, action: "tapHandler:")
+        view.addGestureRecognizer(tapGestureRecogniser)
+        
+        let rotateGestureRecogniser = UIRotationGestureRecognizer(target: self, action: "rotateHandler:")
+        view.addGestureRecognizer(rotateGestureRecogniser)
         
         view.addSubview(skView)
         
@@ -42,13 +55,14 @@ class ViewController: UIViewController, SKPhysicsContactDelegate
         scene.addChild(floor)
         
 
-        let box = SKShapeNode(rectOfSize: CGSize(width: 100, height: 2))
+        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: 100, height: 20))
         box.position = CGPoint(x: view.frame.width / 2 - 20, y: 100)
         box.zRotation = 0.1
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 100, height: 2))
+        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 100, height: 20))
         box.physicsBody?.dynamic = false
         box.physicsBody?.restitution = 0.5
-        
+        box.delegate = self
+   
         scene.addChild(box)
 
         node.position = CGPoint(x: view.frame.width / 2 - 10, y: view.frame.height)
@@ -83,9 +97,34 @@ class ViewController: UIViewController, SKPhysicsContactDelegate
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
     }
     
-    let floorCategoryBitMask: UInt32 =  0b000001
-    let ballCategoryBitMask: UInt32 =   0xb10001
-    let boxCategoryBitMask: UInt32 =    0b001111
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
+    {
+        let touch = touches.anyObject() as UITouch
+
+        // println("touch began \(touch.locationInView(view)) " )
+    }
+    
+    func panHandler(recogniser: UIPanGestureRecognizer)
+    {
+        // if there's no box selected, start drawing one, otherwise move selected box....
+        
+        println("panning! \(recogniser.locationInView(self.view))")
+    }
+    
+    func tapHandler(recogniser: UITapGestureRecognizer)
+    {
+        //println("tap \(recogniser.locationInView(self.view))")
+    }
+    
+    func rotateHandler(recogniser: UIRotationGestureRecognizer)
+    {
+        //println(" \(recogniser.locationInView(self.view))   \(recogniser.rotation) ")
+    }
+
+    func touchEnabledShapeNodeSelected(touchEnabledShapeNode: TouchEnabledShapeNode?)
+    {
+        println("\(touchEnabledShapeNode) is selected!")
+    }
 
     func didBeginContact(contact: SKPhysicsContact)
     {
