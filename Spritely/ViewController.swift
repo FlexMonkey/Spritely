@@ -15,6 +15,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate
     
     let node = SKShapeNode(circleOfRadius: 20)
     let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
+    
+    let node2 = SKShapeNode(circleOfRadius: 20)
+    let nodePhysicsBody2 = SKPhysicsBody(circleOfRadius: 20)
 
     override func viewDidLoad()
     {
@@ -31,62 +34,93 @@ class ViewController: UIViewController, SKPhysicsContactDelegate
         skView.presentScene(scene)
         
 
-        let floor = SKShapeNode(rectOfSize: CGSize(width: 1000, height: 2))
-        floor.position = CGPoint(x: 0, y: 10)
-        floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 1000, height: 2))
+        let floor = SKShapeNode(rectOfSize: CGSize(width: 2000, height: 2))
+        floor.position = CGPoint(x: 0, y: -20)
+        floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2000, height: 2))
         floor.physicsBody?.dynamic = false
 
         scene.addChild(floor)
         
 
         let box = SKShapeNode(rectOfSize: CGSize(width: 100, height: 2))
-        box.position = CGPoint(x: view.frame.width / 2 - 50, y: 100)
-        box.zRotation = 0.2
+        box.position = CGPoint(x: view.frame.width / 2 - 20, y: 100)
+        box.zRotation = 0.1
         box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 100, height: 2))
         box.physicsBody?.dynamic = false
+        box.physicsBody?.restitution = 0.5
         
         scene.addChild(box)
 
-        
-        
-        // node.glowWidth = 3
-        node.position = CGPoint(x: view.frame.width / 2, y: view.frame.height)
+        node.position = CGPoint(x: view.frame.width / 2 - 10, y: view.frame.height)
         node.physicsBody = nodePhysicsBody
         
         scene.addChild(node)
         
+        node2.position = CGPoint(x: view.frame.width / 2, y: view.frame.height - 50)
+        node2.physicsBody = nodePhysicsBody2
         
-        node.physicsBody?.contactTestBitMask = 0x1 << 1
-        floor.physicsBody?.contactTestBitMask = 0x1 << 1
-        // box.physicsBody?.contactTestBitMask = 0x1 << 2
+        scene.addChild(node2)
         
+        let ballCategoryBitMask: Int = 0xb10001
+        
+        node.physicsBody?.contactTestBitMask =  0b0001
+        node2.physicsBody?.contactTestBitMask =  0b0001
+        floor.physicsBody?.contactTestBitMask = 0b0001
+        box.physicsBody?.contactTestBitMask =   0b0010
+        
+        node.physicsBody?.collisionBitMask =    0b1000
+        node2.physicsBody?.collisionBitMask =   0b0100
+        floor.physicsBody?.collisionBitMask =   0b0001
+        box.physicsBody?.collisionBitMask =     0b1111
+        
+        node.physicsBody?.categoryBitMask =    0b1000 | 0xb10001
+        node2.physicsBody?.categoryBitMask =   0b0100 | 0xb10001
+        floor.physicsBody?.categoryBitMask =   floorCategoryBitMask
+        box.physicsBody?.categoryBitMask =     boxCategoryBitMask
         
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
     }
     
+    let floorCategoryBitMask: UInt32 =  0b000001
+    let ballCategoryBitMask: UInt32 =   0xb10001
+    let boxCategoryBitMask: UInt32 =    0b001111
+
     func didBeginContact(contact: SKPhysicsContact)
     {
-        println("contact: \(contact.description) \(contact.bodyA.contactTestBitMask) \(contact.bodyB.contactTestBitMask)")
+        var physicsBodyToReposition: SKPhysicsBody?
+   
+        // play a tone based on velocity (amplitude) and are (frequency) if either body is a box...
         
-        if contact.bodyA.contactTestBitMask == contact.bodyB.contactTestBitMask
+        if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            node.physicsBody = nil
-            node.position = CGPoint(x: view.frame.width / 2, y: view.frame.height)
-            node.physicsBody = nodePhysicsBody
+            println("bing!!! \(contact.bodyB.velocity.dy) \(contact.bodyA.area)")
+        }
+        else if contact.bodyB.categoryBitMask == boxCategoryBitMask
+        {
+            println("bing! \(contact.bodyA.velocity.dy) \(contact.bodyB.area)")
         }
         
+        // wrap around body if other body is floor....
         
-        if contact.bodyA == nodePhysicsBody
+        if contact.bodyA.categoryBitMask & ballCategoryBitMask == ballCategoryBitMask && contact.bodyB.categoryBitMask == floorCategoryBitMask
         {
-            // contact.bodyA.node?.position = CGPoint(x: 0 , y: view.frame.height)
-            // contact.bodyA.velocity = CGVector(dx: 0, dy: 0)
+            physicsBodyToReposition = contact.bodyA
         }
-        else
+        else if contact.bodyB.categoryBitMask & ballCategoryBitMask == ballCategoryBitMask && contact.bodyA.categoryBitMask == floorCategoryBitMask
         {
-            // contact.bodyB.node?.position = CGPoint(x: 0 , y: view.frame.height)
-            // contact.bodyB.velocity = CGVector(dx: 0, dy: 0)
+            physicsBodyToReposition = contact.bodyB
+        }
+        
+        if let physicsBodyToReposition = physicsBodyToReposition
+        {
+            let nodeToReposition = physicsBodyToReposition.node
+            let nodeX: CGFloat = nodeToReposition?.position.x ?? 0
+            
+            nodeToReposition?.physicsBody = nil
+            nodeToReposition?.position = CGPoint(x: nodeX, y: view.frame.height)
+            nodeToReposition?.physicsBody = physicsBodyToReposition
         }
         
     }
