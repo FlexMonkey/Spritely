@@ -13,6 +13,7 @@
 		3E39581C1AA8F2C5007925EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581B1AA8F2C5007925EA /* Images.xcassets */; };
 		3E39581F1AA8F2C5007925EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581D1AA8F2C5007925EA /* LaunchScreen.xib */; };
 		3E39582B1AA8F2C5007925EA /* SpritelyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */; };
+		3E3958361AAB0416007925EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3958351AAB0416007925EA /* Extensions.swift */; };
 		BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		3E3958241AA8F2C5007925EA /* SpritelyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpritelyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E3958291AA8F2C5007925EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpritelyTests.swift; sourceTree = "<group>"; };
+		3E3958351AAB0416007925EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchEnabledShapeNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,6 +81,7 @@
 		3E3958111AA8F2C5007925EA /* Spritely */ = {
 			isa = PBXGroup;
 			children = (
+				3E3958341AAB0407007925EA /* extensions */,
 				BE7E54521AAACF3F00DACDE6 /* components */,
 				3E3958141AA8F2C5007925EA /* AppDelegate.swift */,
 				3E3958161AA8F2C5007925EA /* ViewController.swift */,
@@ -113,6 +116,14 @@
 				3E3958291AA8F2C5007925EA /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3E3958341AAB0407007925EA /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3E3958351AAB0416007925EA /* Extensions.swift */,
+			);
+			name = extensions;
 			sourceTree = "<group>";
 		};
 		BE7E54521AAACF3F00DACDE6 /* components */ = {
@@ -226,6 +237,7 @@
 				BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */,
 				3E3958171AA8F2C5007925EA /* ViewController.swift in Sources */,
 				3E3958151AA8F2C5007925EA /* AppDelegate.swift in Sources */,
+				3E3958361AAB0416007925EA /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

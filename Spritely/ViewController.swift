@@ -12,8 +12,9 @@ import SpriteKit
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate
 {
     let skView = SKView()
+    var scene: SKScene!
     
-    var boxMoveOrigin: CGPoint?
+    var panGestureOrigin: CGPoint?
     var selectedBox: TouchEnabledShapeNode?
  
     let floorCategoryBitMask: UInt32 =  0b000001
@@ -41,7 +42,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         view.addSubview(skView)
         
-        let scene = SKScene(size: view.bounds.size)
+        scene = SKScene(size: view.bounds.size)
         
         skView.showsFPS = true
         skView.showsNodeCount = true
@@ -107,7 +108,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         // println("touch began \(touch.locationInView(view)) " )
     }
     
-
+    var creatingBox: SKShapeNode?
     
     func panHandler(recogniser: UIPanGestureRecognizer)
     {
@@ -117,25 +118,77 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         {
             if recogniser.state == UIGestureRecognizerState.Began
             {
-                boxMoveOrigin = recogniser.locationInView(view)
+                panGestureOrigin = recogniser.locationInView(view)
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
                 let currentGestureLocation = recogniser.locationInView(view)
                 
-                selectedBox?.position.x += currentGestureLocation.x - boxMoveOrigin!.x
-                selectedBox?.position.y -= currentGestureLocation.y - boxMoveOrigin!.y
+                selectedBox?.position.x += currentGestureLocation.x - panGestureOrigin!.x
+                selectedBox?.position.y -= currentGestureLocation.y - panGestureOrigin!.y
                 
-                boxMoveOrigin = recogniser.locationInView(view)
+                panGestureOrigin = recogniser.locationInView(view)
             }
             else
             {
                 selectedBox = nil
-                boxMoveOrigin = nil
+                panGestureOrigin = nil
+            }
+        }
+        else
+        {
+            if recogniser.state == UIGestureRecognizerState.Began
+            {
+                panGestureOrigin = CGPoint(x: recogniser.locationInView(view).x,
+                    y: view.frame.height - recogniser.locationInView(view).y)
+                
+                creatingBox = SKShapeNode(rectOfSize: CGSize(width: 20, height: 20))
+                creatingBox!.position = panGestureOrigin!
+                
+                scene.addChild(creatingBox!)
+            }
+            else if recogniser.state == UIGestureRecognizerState.Changed
+            {
+                creatingBox!.removeFromParent()
+                
+                let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
+                    y: view.frame.height - recogniser.locationInView(view).y)
+                
+                let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
+                
+                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxWidth, height: 20))
+                creatingBox!.position = panGestureOrigin!
+                
+                creatingBox!.zRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
+                
+                scene.addChild(creatingBox!)
+            }
+            else
+            {
+                let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
+                    y: view.frame.height - recogniser.locationInView(view).y)
+                
+                let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
+                
+                let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: boxWidth, height: 20))
+                box.position = panGestureOrigin!
+                box.zRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
+                box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: boxWidth, height: 20))
+                box.physicsBody?.dynamic = false
+                box.physicsBody?.restitution = 0.5
+                box.delegate = self
+                
+                box.physicsBody?.contactTestBitMask =   0b0010
+                box.physicsBody?.collisionBitMask =     0b1111
+                box.physicsBody?.categoryBitMask =     boxCategoryBitMask
+                
+                scene.addChild(box)
+                
+                creatingBox!.removeFromParent()
             }
         }
         
-        println("panning! \(recogniser.locationInView(self.view))")
+        
     }
     
     func tapHandler(recogniser: UITapGestureRecognizer)
