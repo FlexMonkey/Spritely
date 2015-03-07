@@ -17,22 +17,19 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     var panGestureOrigin: CGPoint?
     var selectedBox: TouchEnabledShapeNode?
  
-    let floorCategoryBitMask: UInt32 =  0b000001
-    let ballCategoryBitMask: UInt32 =   0xb10001
-    let boxCategoryBitMask: UInt32 =    0b001111
-    
-    let node = SKShapeNode(circleOfRadius: 20)
-    let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
-    
-    let node2 = SKShapeNode(circleOfRadius: 20)
-    let nodePhysicsBody2 = SKPhysicsBody(circleOfRadius: 20)
+    let floorCategoryBitMask: UInt32 = 0b000001
+    let ballCategoryBitMask: UInt32 = 0xb10001
+    let boxCategoryBitMask: UInt32 = 0b001111
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        let panHandler = UIPanGestureRecognizer(target: self, action: "panHandler:")
-        view.addGestureRecognizer(panHandler)
+        let longPressGestureRecogniser = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+        view.addGestureRecognizer(longPressGestureRecogniser)
+        
+        let panGestureRecogniser = UIPanGestureRecognizer(target: self, action: "panHandler:")
+        view.addGestureRecognizer(panGestureRecogniser)
         
         let tapGestureRecogniser = UITapGestureRecognizer(target: self, action: "tapHandler:")
         view.addGestureRecognizer(tapGestureRecogniser)
@@ -50,7 +47,21 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.scaleMode = .ResizeFill
         skView.presentScene(scene)
         
+        let leftWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: 2000))
+        leftWall.position = CGPoint(x: 0, y: 0)
+        leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: 2000))
+        leftWall.physicsBody?.dynamic = false
+        
+        scene.addChild(leftWall)
 
+        let rightWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: 2000))
+        rightWall.position = CGPoint(x: view.frame.width - 2, y: 0)
+        rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: 2000))
+        rightWall.physicsBody?.dynamic = false
+        
+        scene.addChild(rightWall)
+        
+        
         let floor = SKShapeNode(rectOfSize: CGSize(width: 2000, height: 2))
         floor.position = CGPoint(x: 0, y: -20)
         floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2000, height: 2))
@@ -58,47 +69,47 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
 
         scene.addChild(floor)
         
+        createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
 
-        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: 100, height: 20))
-        box.position = CGPoint(x: view.frame.width / 2 - 20, y: 100)
-        box.zRotation = 0.1
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 100, height: 20))
-        box.physicsBody?.dynamic = false
-        box.physicsBody?.restitution = 0.5
-        box.delegate = self
-   
-        scene.addChild(box)
-
-        node.position = CGPoint(x: view.frame.width / 2 - 10, y: view.frame.height)
-        node.physicsBody = nodePhysicsBody
-        
-        scene.addChild(node)
-        
-        node2.position = CGPoint(x: view.frame.width / 2, y: view.frame.height - 50)
-        node2.physicsBody = nodePhysicsBody2
-        
-        scene.addChild(node2)
-        
-        let ballCategoryBitMask: Int = 0xb10001
-        
-        node.physicsBody?.contactTestBitMask =  0b0001
-        node2.physicsBody?.contactTestBitMask =  0b0001
         floor.physicsBody?.contactTestBitMask = 0b0001
-        box.physicsBody?.contactTestBitMask =   0b0010
-        
-        node.physicsBody?.collisionBitMask =    0b1000
-        node2.physicsBody?.collisionBitMask =   0b0100
         floor.physicsBody?.collisionBitMask =   0b0001
-        box.physicsBody?.collisionBitMask =     0b1111
-        
-        node.physicsBody?.categoryBitMask =    0b1000 | 0xb10001
-        node2.physicsBody?.categoryBitMask =   0b0100 | 0xb10001
         floor.physicsBody?.categoryBitMask =   floorCategoryBitMask
-        box.physicsBody?.categoryBitMask =     boxCategoryBitMask
-        
+
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
+    }
+    
+    func createBall(#position: CGPoint)
+    {
+        let node = SKShapeNode(circleOfRadius: 20)
+        let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
+        
+        node.position = position
+        node.physicsBody = nodePhysicsBody
+        
+        node.physicsBody?.contactTestBitMask = 0b0001
+        node.physicsBody?.collisionBitMask = 0b1000
+        node.physicsBody?.categoryBitMask =  ballCategoryBitMask
+
+        scene.addChild(node)
+    }
+    
+    func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat)
+    {
+        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: width, height: 20))
+        box.position = position
+        box.zRotation = rotation
+        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: width, height: 20))
+        box.physicsBody?.dynamic = false
+        box.physicsBody?.restitution = 0.5
+        box.delegate = self
+        
+        box.physicsBody?.contactTestBitMask = 0b0010
+        box.physicsBody?.collisionBitMask = 0b1111
+        box.physicsBody?.categoryBitMask = boxCategoryBitMask
+        
+        scene.addChild(box)
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
@@ -109,6 +120,19 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     }
     
     var creatingBox: SKShapeNode?
+    
+    func longPressHandler(recogniser: UILongPressGestureRecognizer)
+    {
+        // create a new ball on long press...
+        
+        if recogniser.state == UIGestureRecognizerState.Began
+        {
+            let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
+                y: view.frame.height - recogniser.locationInView(view).y)
+            
+            createBall(position: invertedLocationInView)
+        }
+    }
     
     func panHandler(recogniser: UIPanGestureRecognizer)
     {
@@ -169,20 +193,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                     y: view.frame.height - recogniser.locationInView(view).y)
                 
                 let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
+                let boxRotation = creatingBox!.zRotation
                 
-                let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: boxWidth, height: 20))
-                box.position = panGestureOrigin!
-                box.zRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
-                box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: boxWidth, height: 20))
-                box.physicsBody?.dynamic = false
-                box.physicsBody?.restitution = 0.5
-                box.delegate = self
-                
-                box.physicsBody?.contactTestBitMask =   0b0010
-                box.physicsBody?.collisionBitMask =     0b1111
-                box.physicsBody?.categoryBitMask =     boxCategoryBitMask
-                
-                scene.addChild(box)
+                createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
                 
                 creatingBox!.removeFromParent()
             }
@@ -218,11 +231,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            println("bing!!! \(contact.bodyB.velocity.dy) \(contact.bodyA.area)")
+            // println("bing!!! \(contact.bodyB.velocity.dy) \(contact.bodyA.area)")
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
-            println("bing! \(contact.bodyA.velocity.dy) \(contact.bodyB.area)")
+            // println("bong! \(contact.bodyA.velocity.dy) \(contact.bodyB.area)")
         }
         
         // wrap around body if other body is floor....
