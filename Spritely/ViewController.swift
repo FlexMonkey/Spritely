@@ -12,6 +12,9 @@ import SpriteKit
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate
 {
     let skView = SKView()
+    
+    var boxMoveOrigin: CGPoint?
+    var selectedBox: TouchEnabledShapeNode?
  
     let floorCategoryBitMask: UInt32 =  0b000001
     let ballCategoryBitMask: UInt32 =   0xb10001
@@ -104,9 +107,33 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         // println("touch began \(touch.locationInView(view)) " )
     }
     
+
+    
     func panHandler(recogniser: UIPanGestureRecognizer)
     {
         // if there's no box selected, start drawing one, otherwise move selected box....
+        
+        if let _ = selectedBox
+        {
+            if recogniser.state == UIGestureRecognizerState.Began
+            {
+                boxMoveOrigin = recogniser.locationInView(view)
+            }
+            else if recogniser.state == UIGestureRecognizerState.Changed
+            {
+                let currentGestureLocation = recogniser.locationInView(view)
+                
+                selectedBox?.position.x += currentGestureLocation.x - boxMoveOrigin!.x
+                selectedBox?.position.y -= currentGestureLocation.y - boxMoveOrigin!.y
+                
+                boxMoveOrigin = recogniser.locationInView(view)
+            }
+            else
+            {
+                selectedBox = nil
+                boxMoveOrigin = nil
+            }
+        }
         
         println("panning! \(recogniser.locationInView(self.view))")
     }
@@ -121,8 +148,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         //println(" \(recogniser.locationInView(self.view))   \(recogniser.rotation) ")
     }
 
+    
+    
     func touchEnabledShapeNodeSelected(touchEnabledShapeNode: TouchEnabledShapeNode?)
     {
+        selectedBox = touchEnabledShapeNode
+        
         println("\(touchEnabledShapeNode) is selected!")
     }
 

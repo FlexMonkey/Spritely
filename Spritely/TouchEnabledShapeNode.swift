@@ -30,7 +30,7 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
-        fillColor = UIColor.whiteColor()
+        //fillColor = UIColor.whiteColor()
 
         if let delegate = delegate
         {
@@ -40,22 +40,26 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!)
     {
+        /*
         fillColor = UIColor.clearColor()
         
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
         }
+        */
     }
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
     {
+        /*
         fillColor = UIColor.clearColor()
         
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
         }
+        */
     }
     
 }
