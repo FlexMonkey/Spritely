@@ -160,6 +160,7 @@
 		BE7E564A1AAC3B1300DACDE6 /* AKAudioAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B61AAC3B1300DACDE6 /* AKAudioAnalyzer.m */; };
 		BE7E564B1AAC3B1300DACDE6 /* LevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */; };
 		BE7E564F1AAC3BF900DACDE6 /* Mandolin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */; };
+		BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -495,6 +496,7 @@
 		BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LevelMeter.m; sourceTree = "<group>"; };
 		BE7E564C1AAC3B5F00DACDE6 /* Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mandolin.swift; sourceTree = "<group>"; };
+		BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeNodeWithOrigin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -590,6 +592,7 @@
 			isa = PBXGroup;
 			children = (
 				BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */,
+				BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */,
 			);
 			name = components;
 			sourceTree = "<group>";
@@ -1448,6 +1451,7 @@
 				BE7E56111AAC3B1300DACDE6 /* AKBeatenPlate.m in Sources */,
 				BE7E560D1AAC3B1300DACDE6 /* AKSekere.m in Sources */,
 				BE7E56361AAC3B1300DACDE6 /* AKBandPassButterworthFilter.m in Sources */,
+				BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */,
 				BE7E560A1AAC3B1300DACDE6 /* AKDroplet.m in Sources */,
 				BE7E55E21AAC3B1300DACDE6 /* AKArrayTable.m in Sources */,
 				BE7E56431AAC3B1300DACDE6 /* AKConstant.m in Sources */,

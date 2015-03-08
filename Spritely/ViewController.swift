@@ -96,8 +96,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         let rotateGestureRecogniser = UIRotationGestureRecognizer(target: self, action: "rotateHandler:")
         rotateGestureRecogniser.delegate = self
         view.addGestureRecognizer(rotateGestureRecogniser)
-        
-        
+
         view.addSubview(skView)
         
         scene = SKScene(size: view.bounds.size)
@@ -112,14 +111,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         leftWall.position = CGPoint(x: -2, y: view.frame.height / 2)
         leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
         leftWall.physicsBody?.dynamic = false
-        
         scene.addChild(leftWall)
 
         let rightWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
         rightWall.position = CGPoint(x: view.frame.width + 2, y: view.frame.height / 2)
         rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
         rightWall.physicsBody?.dynamic = false
-        
         scene.addChild(rightWall)
         
         
@@ -127,26 +124,23 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         floor.position = CGPoint(x: view.frame.width / 2, y: -2)
         floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: view.frame.width, height: 2))
         floor.physicsBody?.dynamic = false
-
         scene.addChild(floor)
         
-        createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
-
         floor.physicsBody?.contactTestBitMask = 0b0001
         floor.physicsBody?.collisionBitMask =   0b0001
         floor.physicsBody?.categoryBitMask =   floorCategoryBitMask
+        
+        createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
+        createBall(position: CGPoint(x: view.frame.width / 2, y: view.frame.height))
 
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
-        
-        
-        
     }
     
     func createBall(#position: CGPoint)
     {
-        let node = SKShapeNode(circleOfRadius: 20)
+        let node = ShapeNodeWithOrigin(circleOfRadius: 20)
         let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
         
         node.position = position
@@ -156,6 +150,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         node.physicsBody?.collisionBitMask = 0b1000
         node.physicsBody?.categoryBitMask =  ballCategoryBitMask
 
+        node.startingPostion = position
+        
         scene.addChild(node)
     }
     
@@ -323,21 +319,15 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            // println("bing!!! \(contact.bodyB.velocity.dy) \(contact.bodyA.area)")
-            
-            if let foo = contact.bodyA.node as? TouchEnabledShapeNode
-            {
-                foo.play(); println("bong!")
-            }
+            let amplitude = Double(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1000)
+
+            (contact.bodyA.node as? TouchEnabledShapeNode)?.play(amplitude)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
-            // println("bong! \(contact.bodyA.velocity.dy) \(contact.bodyB.area)")
-            
-            if let foo = contact.bodyB.node as? TouchEnabledShapeNode
-            {
-                foo.play(); println("bing!")
-            }
+            let amplitude = Double(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1000)
+  
+            (contact.bodyB.node as? TouchEnabledShapeNode)?.play(amplitude)
         }
         
         // wrap around body if other body is floor....
@@ -354,7 +344,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         if let physicsBodyToReposition = physicsBodyToReposition
         {
             let nodeToReposition = physicsBodyToReposition.node
-            let nodeX: CGFloat = nodeToReposition?.position.x ?? 0
+            let nodeX: CGFloat = (nodeToReposition as? ShapeNodeWithOrigin)?.startingPostion?.x ?? 0
             
             nodeToReposition?.physicsBody = nil
             nodeToReposition?.position = CGPoint(x: nodeX, y: view.frame.height)

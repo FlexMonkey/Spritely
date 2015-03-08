@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SpriteKit
 
 extension CGPoint
 {
@@ -32,3 +33,4 @@ extension Float
         return self * Float(180.0 / M_PI)
     }
 }
+

@@ -46,10 +46,10 @@ class TouchEnabledShapeNode: SKShapeNode
         }
     }
 
-    
-
-    func play()
+    func play(amplitude: Double)
     {
+        mandolin.mandolin.amplitude.setValue(amplitude, forKey: "value")
+        
         mandolin.playForDuration(3.0);
     }
     
