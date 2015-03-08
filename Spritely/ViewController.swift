@@ -11,6 +11,10 @@ import SpriteKit
 
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
 {
+    let frequencies = [246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989].sorted({$0 > $1})
+    let minBoxLength: CGFloat = 100
+    let maxBoxLength: CGFloat = 700
+    
     let skView = SKView()
     var scene: SKScene!
     
@@ -137,13 +141,19 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     
     func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat)
     {
-        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: width, height: boxHeight))
+        let actualWidth = max(min(width, maxBoxLength), minBoxLength)
+        
+        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: actualWidth, height: boxHeight))
         box.position = position
         box.zRotation = rotation
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: width, height: boxHeight))
+        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: actualWidth, height: boxHeight))
         box.physicsBody?.dynamic = false
         box.physicsBody?.restitution = 0.5
         box.delegate = self
+        
+        let frequencyIndex = Int(round((actualWidth - minBoxLength) / (maxBoxLength - minBoxLength) * CGFloat(frequencies.count - 1)))
+
+        box.frequency = frequencies[frequencyIndex]
         
         box.physicsBody?.contactTestBitMask = 0b0010
         box.physicsBody?.collisionBitMask = 0b1111
@@ -157,21 +167,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         return true
     }
 
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
-    {
-        let touch = touches.anyObject() as UITouch
-
-        // println("touch began \(touch.locationInView(view)) " )
-    }
-    
     var creatingBox: SKShapeNode?
     
     func longPressHandler(recogniser: UILongPressGestureRecognizer)
     {
         // create a new ball on long press...
-        
-        println("longPressHandler!")
-        
+  
         if selectedBox == nil
         {
             if recogniser.state == UIGestureRecognizerState.Began
@@ -240,16 +241,19 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             }
             else
             {
-                let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
-                    y: view.frame.height - recogniser.locationInView(view).y)
+                creatingBox?.removeFromParent()
                 
-                let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
-                let boxRotation = creatingBox!.zRotation
-                
-                createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
-                
-                creatingBox!.removeFromParent()
-                
+                if panGestureOrigin != nil
+                {
+                    let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
+                        y: view.frame.height - recogniser.locationInView(view).y)
+                    
+                    let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
+                    let boxRotation = creatingBox!.zRotation
+                    
+                    createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                }
+  
                 panGestureOrigin = nil
                 rotateGestureAngleOrigin = nil
             }
@@ -258,8 +262,6 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
     }
 
-    
-    
     func rotateHandler(recogniser: UIRotationGestureRecognizer)
     {
         if selectedBox != nil
@@ -290,8 +292,6 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         if panGestureOrigin == nil && rotateGestureAngleOrigin == nil
         {
             selectedBox = touchEnabledShapeNode
-            
-            println("is selected! \(selectedBox != nil)")
         }
     }
 

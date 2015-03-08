@@ -10,20 +10,34 @@ import SpriteKit
 
 class TouchEnabledShapeNode: SKShapeNode
 {
+    private let label = SKLabelNode(text: "Hello!")
+    
     override init()
     {
         super.init()
         
         userInteractionEnabled = true
+
+        addChild(label)
     }
 
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
-  
-        userInteractionEnabled = true
+
+        addChild(label)
     }
     
+    var frequency: Double = 0
+    {
+        didSet
+        {
+            label.text = "\(Int(frequency)) Hz"
+            
+            label.position = CGPoint(x: 0, y: 1 - label.frame.height / 2)
+        }
+    }
+
     var delegate: TouchEnabledShapeNodeDelegate?
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
