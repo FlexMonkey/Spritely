@@ -34,6 +34,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         super.init()
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+        
+        createInstrumentCache()
     }
 
     required init(coder aDecoder: NSCoder)
@@ -41,6 +43,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         super.init(coder: aDecoder)
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+        
+        createInstrumentCache()
     }
     
     var selectedBox: TouchEnabledShapeNode?
@@ -63,6 +67,19 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 view.addGestureRecognizer(longPressGestureRecogniser)
             }
         }
+    }
+    
+    func createInstrumentCache()
+    {
+        for i in 0 ..< 20
+        {
+            let mandolin = Mandolin(noteFrequency: 0);
+            AKOrchestra.addInstrument(mandolin)
+            
+            InstrumentsCache.mandolins.append(mandolin)
+        }
+        
+        AKOrchestra.start()
     }
     
     override func viewDidLoad()
@@ -122,6 +139,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
+        
+        
+        
     }
     
     func createBall(#position: CGPoint)
@@ -304,10 +324,20 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
             // println("bing!!! \(contact.bodyB.velocity.dy) \(contact.bodyA.area)")
+            
+            if let foo = contact.bodyA.node as? TouchEnabledShapeNode
+            {
+                foo.play(); println("bong!")
+            }
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
             // println("bong! \(contact.bodyA.velocity.dy) \(contact.bodyB.area)")
+            
+            if let foo = contact.bodyB.node as? TouchEnabledShapeNode
+            {
+                foo.play(); println("bing!")
+            }
         }
         
         // wrap around body if other body is floor....

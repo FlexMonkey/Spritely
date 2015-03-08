@@ -10,10 +10,14 @@ import SpriteKit
 
 class TouchEnabledShapeNode: SKShapeNode
 {
+    var delegate: TouchEnabledShapeNodeDelegate?
     private let label = SKLabelNode(text: "Hello!")
+    var mandolin: Mandolin
     
     override init()
     {
+        mandolin = InstrumentsCache.mandolins[InstrumentsCache.instrumentIndex++]
+        
         super.init()
         
         userInteractionEnabled = true
@@ -23,22 +27,31 @@ class TouchEnabledShapeNode: SKShapeNode
 
     required init?(coder aDecoder: NSCoder)
     {
+        mandolin = InstrumentsCache.mandolins[InstrumentsCache.instrumentIndex++]
+        
         super.init(coder: aDecoder)
 
         addChild(label)
     }
     
-    var frequency: Double = 0
+    var frequency: Double = 440
     {
         didSet
         {
+            mandolin.mandolin.frequency.setValue(frequency, forKey: "value")
+            
             label.text = "\(Int(frequency)) Hz"
             
             label.position = CGPoint(x: 0, y: 1 - label.frame.height / 2)
         }
     }
 
-    var delegate: TouchEnabledShapeNodeDelegate?
+    
+
+    func play()
+    {
+        mandolin.playForDuration(3.0);
+    }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
@@ -68,6 +81,13 @@ class TouchEnabledShapeNode: SKShapeNode
         }
     }
     
+}
+
+struct InstrumentsCache
+{
+    static var instrumentIndex = 0
+    
+    static var mandolins = [Mandolin]()
 }
 
 protocol TouchEnabledShapeNodeDelegate
