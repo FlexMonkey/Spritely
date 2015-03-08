@@ -35,7 +35,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
         
-        createInstrumentCache()
+        InstrumentsProvider.initialise()
     }
 
     required init(coder aDecoder: NSCoder)
@@ -44,7 +44,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
         
-        createInstrumentCache()
+        InstrumentsProvider.initialise()
     }
     
     var selectedBox: TouchEnabledShapeNode?
@@ -69,19 +69,6 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         }
     }
     
-    func createInstrumentCache()
-    {
-        for i in 0 ..< 20
-        {
-            let mandolin = Mandolin(noteFrequency: 0);
-            AKOrchestra.addInstrument(mandolin)
-            
-            InstrumentsCache.mandolins.append(mandolin)
-        }
-        
-        AKOrchestra.start()
-    }
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -100,9 +87,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         view.addSubview(skView)
         
         scene = SKScene(size: view.bounds.size)
-        
-        skView.showsFPS = true
-        skView.showsNodeCount = true
+
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .ResizeFill
         skView.presentScene(scene)
@@ -319,13 +304,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Double(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1000)
+            let amplitude = Double(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
 
             (contact.bodyA.node as? TouchEnabledShapeNode)?.play(amplitude)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Double(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1000)
+            let amplitude = Double(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1500)
   
             (contact.bodyB.node as? TouchEnabledShapeNode)?.play(amplitude)
         }

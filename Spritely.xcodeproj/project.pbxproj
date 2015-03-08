@@ -161,6 +161,7 @@
 		BE7E564B1AAC3B1300DACDE6 /* LevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */; };
 		BE7E564F1AAC3BF900DACDE6 /* Mandolin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */; };
 		BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */; };
+		BE7E56531AACB5D500DACDE6 /* InstrumentsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -497,6 +498,7 @@
 		BE7E564C1AAC3B5F00DACDE6 /* Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mandolin.swift; sourceTree = "<group>"; };
 		BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeNodeWithOrigin.swift; sourceTree = "<group>"; };
+		BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1228,6 +1230,7 @@
 			isa = PBXGroup;
 			children = (
 				BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */,
+				BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */,
 			);
 			name = audioKit;
 			sourceTree = "<group>";
@@ -1466,6 +1469,7 @@
 				BE7E55D31AAC3B1300DACDE6 /* AKTrackedFrequency.m in Sources */,
 				BE7E561A1AAC3B1300DACDE6 /* AKSegmentArrayLoop.m in Sources */,
 				BE7E56321AAC3B1300DACDE6 /* AKMoogVCF.m in Sources */,
+				BE7E56531AACB5D500DACDE6 /* InstrumentsProvider.swift in Sources */,
 				BE7E55BF1AAC3B1300DACDE6 /* AKPhrase.m in Sources */,
 				BE7E56251AAC3B1300DACDE6 /* AKVariableDelay.m in Sources */,
 				BE7E563E1AAC3B1300DACDE6 /* AKBalance.m in Sources */,

@@ -16,7 +16,7 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override init()
     {
-        mandolin = InstrumentsCache.mandolins[InstrumentsCache.instrumentIndex++]
+        mandolin = InstrumentsProvider.getAvailableInstrument()
         
         super.init()
         
@@ -27,7 +27,7 @@ class TouchEnabledShapeNode: SKShapeNode
 
     required init?(coder aDecoder: NSCoder)
     {
-        mandolin = InstrumentsCache.mandolins[InstrumentsCache.instrumentIndex++]
+        mandolin = InstrumentsProvider.getAvailableInstrument()
         
         super.init(coder: aDecoder)
 
@@ -83,12 +83,6 @@ class TouchEnabledShapeNode: SKShapeNode
     
 }
 
-struct InstrumentsCache
-{
-    static var instrumentIndex = 0
-    
-    static var mandolins = [Mandolin]()
-}
 
 protocol TouchEnabledShapeNodeDelegate
 {
