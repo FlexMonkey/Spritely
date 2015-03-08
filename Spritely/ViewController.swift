@@ -9,33 +9,73 @@
 import UIKit
 import SpriteKit
 
-class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate
+class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
 {
     let skView = SKView()
     var scene: SKScene!
     
     var panGestureOrigin: CGPoint?
-    var selectedBox: TouchEnabledShapeNode?
+    var rotateGestureAngleOrigin: CGFloat?
  
     let floorCategoryBitMask: UInt32 = 0b000001
     let ballCategoryBitMask: UInt32 = 0xb10001
     let boxCategoryBitMask: UInt32 = 0b001111
+    
+    let boxHeight = CGFloat(30)
 
+    let longPressGestureRecogniser: UILongPressGestureRecognizer!
+    
+    override init()
+    {
+        super.init()
+        
+        longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+    }
+
+    required init(coder aDecoder: NSCoder)
+    {
+        super.init(coder: aDecoder)
+        
+        longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+    }
+    
+    var selectedBox: TouchEnabledShapeNode?
+    {
+        didSet
+        {
+            if let previousSelection = oldValue
+            {
+                previousSelection.fillColor = UIColor.clearColor()
+            }
+            
+            if let newSelection = selectedBox
+            {
+                newSelection.fillColor = UIColor.whiteColor()
+                
+                view.removeGestureRecognizer(longPressGestureRecogniser)
+            }
+            else
+            {
+                view.addGestureRecognizer(longPressGestureRecogniser)
+            }
+        }
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        let longPressGestureRecogniser = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+
         view.addGestureRecognizer(longPressGestureRecogniser)
         
         let panGestureRecogniser = UIPanGestureRecognizer(target: self, action: "panHandler:")
+        panGestureRecogniser.maximumNumberOfTouches = 1
+        panGestureRecogniser.delegate = self
         view.addGestureRecognizer(panGestureRecogniser)
-        
-        let tapGestureRecogniser = UITapGestureRecognizer(target: self, action: "tapHandler:")
-        view.addGestureRecognizer(tapGestureRecogniser)
-        
+   
         let rotateGestureRecogniser = UIRotationGestureRecognizer(target: self, action: "rotateHandler:")
+        rotateGestureRecogniser.delegate = self
         view.addGestureRecognizer(rotateGestureRecogniser)
+        
         
         view.addSubview(skView)
         
@@ -47,24 +87,24 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.scaleMode = .ResizeFill
         skView.presentScene(scene)
         
-        let leftWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: 2000))
-        leftWall.position = CGPoint(x: 0, y: 0)
-        leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: 2000))
+        let leftWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
+        leftWall.position = CGPoint(x: -2, y: view.frame.height / 2)
+        leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
         leftWall.physicsBody?.dynamic = false
         
         scene.addChild(leftWall)
 
-        let rightWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: 2000))
-        rightWall.position = CGPoint(x: view.frame.width - 2, y: 0)
-        rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: 2000))
+        let rightWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
+        rightWall.position = CGPoint(x: view.frame.width + 2, y: view.frame.height / 2)
+        rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
         rightWall.physicsBody?.dynamic = false
         
         scene.addChild(rightWall)
         
         
-        let floor = SKShapeNode(rectOfSize: CGSize(width: 2000, height: 2))
-        floor.position = CGPoint(x: 0, y: -20)
-        floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2000, height: 2))
+        let floor = SKShapeNode(rectOfSize: CGSize(width: view.frame.width, height: 2))
+        floor.position = CGPoint(x: view.frame.width / 2, y: -2)
+        floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: view.frame.width, height: 2))
         floor.physicsBody?.dynamic = false
 
         scene.addChild(floor)
@@ -97,10 +137,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     
     func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat)
     {
-        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: width, height: 20))
+        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: width, height: boxHeight))
         box.position = position
         box.zRotation = rotation
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: width, height: 20))
+        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: width, height: boxHeight))
         box.physicsBody?.dynamic = false
         box.physicsBody?.restitution = 0.5
         box.delegate = self
@@ -112,6 +152,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.addChild(box)
     }
     
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
+    {
+        return true
+    }
+
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
         let touch = touches.anyObject() as UITouch
@@ -125,12 +170,17 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         // create a new ball on long press...
         
-        if recogniser.state == UIGestureRecognizerState.Began
+        println("longPressHandler!")
+        
+        if selectedBox == nil
         {
-            let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
-                y: view.frame.height - recogniser.locationInView(view).y)
-            
-            createBall(position: invertedLocationInView)
+            if recogniser.state == UIGestureRecognizerState.Began
+            {
+                let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
+                    y: view.frame.height - recogniser.locationInView(view).y)
+                
+                createBall(position: invertedLocationInView)
+            }
         }
     }
     
@@ -138,7 +188,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         // if there's no box selected, start drawing one, otherwise move selected box....
         
-        if let _ = selectedBox
+        if selectedBox != nil
         {
             if recogniser.state == UIGestureRecognizerState.Began
             {
@@ -148,15 +198,16 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             {
                 let currentGestureLocation = recogniser.locationInView(view)
                 
-                selectedBox?.position.x += currentGestureLocation.x - panGestureOrigin!.x
-                selectedBox?.position.y -= currentGestureLocation.y - panGestureOrigin!.y
+                selectedBox!.position.x += currentGestureLocation.x - panGestureOrigin!.x
+                selectedBox!.position.y -= currentGestureLocation.y - panGestureOrigin!.y
                 
                 panGestureOrigin = recogniser.locationInView(view)
             }
             else
             {
-                selectedBox = nil
+                rotateGestureAngleOrigin = nil
                 panGestureOrigin = nil
+                selectedBox = nil
             }
         }
         else
@@ -166,7 +217,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 panGestureOrigin = CGPoint(x: recogniser.locationInView(view).x,
                     y: view.frame.height - recogniser.locationInView(view).y)
                 
-                creatingBox = SKShapeNode(rectOfSize: CGSize(width: 20, height: 20))
+                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxHeight, height: boxHeight))
                 creatingBox!.position = panGestureOrigin!
                 
                 scene.addChild(creatingBox!)
@@ -180,7 +231,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
                 
-                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxWidth, height: 20))
+                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxWidth, height: boxHeight))
                 creatingBox!.position = panGestureOrigin!
                 
                 creatingBox!.zRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
@@ -198,29 +249,50 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
                 
                 creatingBox!.removeFromParent()
+                
+                panGestureOrigin = nil
+                rotateGestureAngleOrigin = nil
             }
         }
         
         
     }
+
     
-    func tapHandler(recogniser: UITapGestureRecognizer)
-    {
-        //println("tap \(recogniser.locationInView(self.view))")
-    }
     
     func rotateHandler(recogniser: UIRotationGestureRecognizer)
     {
-        //println(" \(recogniser.locationInView(self.view))   \(recogniser.rotation) ")
+        if selectedBox != nil
+        {
+            if recogniser.state == UIGestureRecognizerState.Began
+            {
+                rotateGestureAngleOrigin = recogniser.rotation
+            }
+            else if recogniser.state == UIGestureRecognizerState.Changed
+            {
+                selectedBox?.zRotation += rotateGestureAngleOrigin! - recogniser.rotation
+                
+                rotateGestureAngleOrigin = recogniser.rotation
+            }
+            else
+            {
+                rotateGestureAngleOrigin = nil
+                panGestureOrigin = nil
+                selectedBox = nil
+            }
+        }
     }
 
     
     
     func touchEnabledShapeNodeSelected(touchEnabledShapeNode: TouchEnabledShapeNode?)
     {
-        selectedBox = touchEnabledShapeNode
-        
-        println("\(touchEnabledShapeNode) is selected!")
+        if panGestureOrigin == nil && rotateGestureAngleOrigin == nil
+        {
+            selectedBox = touchEnabledShapeNode
+            
+            println("is selected! \(selectedBox != nil)")
+        }
     }
 
     func didBeginContact(contact: SKPhysicsContact)
@@ -261,6 +333,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
     }
     
+    override func supportedInterfaceOrientations() -> Int
+    {
+        return Int(UIInterfaceOrientationMask.Landscape.rawValue)
+    }
 
     override func viewDidLayoutSubviews()
     {

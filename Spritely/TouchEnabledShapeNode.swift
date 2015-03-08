@@ -20,9 +20,7 @@ class TouchEnabledShapeNode: SKShapeNode
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
-        
-        fillColor = UIColor.whiteColor()
-        
+  
         userInteractionEnabled = true
     }
     
@@ -30,8 +28,6 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
-        //fillColor = UIColor.whiteColor()
-
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(self)
@@ -40,26 +36,22 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!)
     {
-        /*
-        fillColor = UIColor.clearColor()
+        println("touchesCancelled")
         
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
         }
-        */
     }
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
     {
-        /*
-        fillColor = UIColor.clearColor()
+        println("touchesEnded")
         
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
         }
-        */
     }
     
 }
