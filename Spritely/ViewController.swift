@@ -11,7 +11,8 @@ import SpriteKit
 
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
 {
-    let frequencies: [Float] = [246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989].sorted({$0 > $1})
+    let frequencies: [Float] = [130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998, 207.652, 220, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989, 783.991, 830.609, 880, 932.328, 987.767 ].sorted({$0 > $1})
+    
     let minBoxLength: CGFloat = 100
     let maxBoxLength: CGFloat = 700
     
