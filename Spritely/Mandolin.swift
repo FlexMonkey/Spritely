@@ -8,13 +8,13 @@
 
 import Foundation
 
-class Mandolin: AKInstrument
+class Instrument: AKInstrument
 {
-    private let mandolin:AKMandolin
+    private let instrument:AKVibes
     
     init(noteFrequency: Double)
     {
-        mandolin = AKMandolin()
+        instrument = AKVibes()
         
         super.init()
         
@@ -24,21 +24,21 @@ class Mandolin: AKInstrument
         addProperty(frequency)
         addProperty(amplitude)
 
-        mandolin.frequency = frequency
-        mandolin.amplitude = amplitude
-        mandolin.bodySize = 0.7.ak
-        connect(mandolin)
+        instrument.frequency = frequency
+        instrument.amplitude = amplitude
         
-        connect(AKAudioOutput(audioSource: mandolin))
+        connect(instrument)
+        
+        connect(AKAudioOutput(audioSource: instrument))
     }
     
     func setFrequency(value: Float)
     {
-         mandolin.frequency.value = value
+         instrument.frequency.value = value
     }
     
     func setAmplitude(value: Float)
     {
-        mandolin.amplitude.value = value
+        instrument.amplitude.value = value
     }
 }

@@ -10,22 +10,22 @@ struct InstrumentsProvider
 {
     private static var instrumentIndex = 0
     
-    private static var mandolins = [Mandolin]()
+    private static var mandolins = [Instrument]()
     
     static func initialise()
     {
         for i in 0 ..< 64
         {
-            let mandolin = Mandolin(noteFrequency: 0);
-            AKOrchestra.addInstrument(mandolin)
+            let instrument = Instrument(noteFrequency: 0);
+            AKOrchestra.addInstrument(instrument)
             
-            InstrumentsProvider.mandolins.append(mandolin)
+            InstrumentsProvider.mandolins.append(instrument)
         }
         
         AKOrchestra.start()
     }
     
-    static func getAvailableInstrument() -> Mandolin
+    static func getAvailableInstrument() -> Instrument
     {
         return mandolins[instrumentIndex++]
     }
