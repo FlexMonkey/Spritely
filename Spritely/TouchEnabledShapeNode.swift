@@ -12,12 +12,9 @@ class TouchEnabledShapeNode: SKShapeNode
 {
     var delegate: TouchEnabledShapeNodeDelegate?
     private let label = SKLabelNode(text: "Hello!")
-    var instrument: Instrument
     
     override init()
     {
-        instrument = InstrumentsProvider.getAvailableInstrument()
-        
         super.init()
         
         userInteractionEnabled = true
@@ -27,8 +24,6 @@ class TouchEnabledShapeNode: SKShapeNode
 
     required init?(coder aDecoder: NSCoder)
     {
-        instrument = InstrumentsProvider.getAvailableInstrument()
-        
         super.init(coder: aDecoder)
 
         addChild(label)
@@ -38,21 +33,11 @@ class TouchEnabledShapeNode: SKShapeNode
     {
         didSet
         {
-            instrument.setFrequency(frequency)
-            
             label.text = "\(Int(frequency)) Hz"
-            
             label.position = CGPoint(x: 0, y: 1 - label.frame.height / 2)
         }
     }
 
-    func play(amplitude: Float)
-    {
-        instrument.setAmplitude(amplitude)
-        
-        instrument.playForDuration(3.0);
-    }
-    
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
         if let delegate = delegate
