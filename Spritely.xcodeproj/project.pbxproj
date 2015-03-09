@@ -159,9 +159,9 @@
 		BE7E56491AAC3B1300DACDE6 /* AKNoteProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B31AAC3B1300DACDE6 /* AKNoteProperty.m */; };
 		BE7E564A1AAC3B1300DACDE6 /* AKAudioAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B61AAC3B1300DACDE6 /* AKAudioAnalyzer.m */; };
 		BE7E564B1AAC3B1300DACDE6 /* LevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */; };
-		BE7E564F1AAC3BF900DACDE6 /* Mandolin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */; };
+		BE7E564F1AAC3BF900DACDE6 /* BarInstrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E564E1AAC3BF900DACDE6 /* BarInstrument.swift */; };
 		BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */; };
-		BE7E56531AACB5D500DACDE6 /* InstrumentsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */; };
+		C43F47ED1AAD3B19005E437A /* Conductor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43F47EC1AAD3B19005E437A /* Conductor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -496,9 +496,9 @@
 		BE7E55B71AAC3B1300DACDE6 /* LevelMeter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LevelMeter.h; sourceTree = "<group>"; };
 		BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LevelMeter.m; sourceTree = "<group>"; };
 		BE7E564C1AAC3B5F00DACDE6 /* Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
-		BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mandolin.swift; sourceTree = "<group>"; };
+		BE7E564E1AAC3BF900DACDE6 /* BarInstrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarInstrument.swift; sourceTree = "<group>"; };
 		BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeNodeWithOrigin.swift; sourceTree = "<group>"; };
-		BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsProvider.swift; sourceTree = "<group>"; };
+		C43F47EC1AAD3B19005E437A /* Conductor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conductor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1229,8 +1229,8 @@
 		BE7E564D1AAC3BE500DACDE6 /* audioKit */ = {
 			isa = PBXGroup;
 			children = (
-				BE7E564E1AAC3BF900DACDE6 /* Mandolin.swift */,
-				BE7E56521AACB5D500DACDE6 /* InstrumentsProvider.swift */,
+				BE7E564E1AAC3BF900DACDE6 /* BarInstrument.swift */,
+				C43F47EC1AAD3B19005E437A /* Conductor.swift */,
 			);
 			name = audioKit;
 			sourceTree = "<group>";
@@ -1408,7 +1408,7 @@
 				BE7E56331AAC3B1300DACDE6 /* AKResonantFilter.m in Sources */,
 				BE7E55DA1AAC3B1300DACDE6 /* AKResynthesizedAudio.m in Sources */,
 				BE7E55F91AAC3B1300DACDE6 /* AKGranularSynthesizer.m in Sources */,
-				BE7E564F1AAC3BF900DACDE6 /* Mandolin.swift in Sources */,
+				BE7E564F1AAC3BF900DACDE6 /* BarInstrument.swift in Sources */,
 				BE7E56021AAC3B1300DACDE6 /* AKMandolin.m in Sources */,
 				BE7E56141AAC3B1300DACDE6 /* AKSimpleWaveGuideModel.m in Sources */,
 				BE7E56311AAC3B1300DACDE6 /* AKMoogLadder.m in Sources */,
@@ -1469,7 +1469,6 @@
 				BE7E55D31AAC3B1300DACDE6 /* AKTrackedFrequency.m in Sources */,
 				BE7E561A1AAC3B1300DACDE6 /* AKSegmentArrayLoop.m in Sources */,
 				BE7E56321AAC3B1300DACDE6 /* AKMoogVCF.m in Sources */,
-				BE7E56531AACB5D500DACDE6 /* InstrumentsProvider.swift in Sources */,
 				BE7E55BF1AAC3B1300DACDE6 /* AKPhrase.m in Sources */,
 				BE7E56251AAC3B1300DACDE6 /* AKVariableDelay.m in Sources */,
 				BE7E563E1AAC3B1300DACDE6 /* AKBalance.m in Sources */,
@@ -1480,6 +1479,7 @@
 				BE7E55E01AAC3B1300DACDE6 /* AKTableValueControl.m in Sources */,
 				BE7E56061AAC3B1300DACDE6 /* AKVibes.m in Sources */,
 				BE7E56231AAC3B1300DACDE6 /* AKDelay.m in Sources */,
+				C43F47ED1AAD3B19005E437A /* Conductor.swift in Sources */,
 				BE7E55EF1AAC3B1300DACDE6 /* AKMinimum.m in Sources */,
 				BE7E55FB1AAC3B1300DACDE6 /* AKPortamento.m in Sources */,
 				BE7E56171AAC3B1300DACDE6 /* AKNoise.m in Sources */,
