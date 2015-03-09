@@ -10,7 +10,7 @@ import Foundation
 
 class Mandolin: AKInstrument
 {
-    let mandolin:AKMandolin
+    private let mandolin:AKMandolin
     
     init(noteFrequency: Double)
     {
@@ -30,5 +30,15 @@ class Mandolin: AKInstrument
         connect(mandolin)
         
         connect(AKAudioOutput(audioSource: mandolin))
+    }
+    
+    func setFrequency(value: Float)
+    {
+         mandolin.frequency.value = value
+    }
+    
+    func setAmplitude(value: Float)
+    {
+        mandolin.amplitude.value = value
     }
 }

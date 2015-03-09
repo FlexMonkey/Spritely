@@ -11,7 +11,7 @@ import SpriteKit
 
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
 {
-    let frequencies = [246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989].sorted({$0 > $1})
+    let frequencies: [Float] = [246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989].sorted({$0 > $1})
     let minBoxLength: CGFloat = 100
     let maxBoxLength: CGFloat = 700
     
@@ -304,13 +304,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Double(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
+            let amplitude = Float(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
 
             (contact.bodyA.node as? TouchEnabledShapeNode)?.play(amplitude)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Double(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1500)
+            let amplitude = Float(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1500)
   
             (contact.bodyB.node as? TouchEnabledShapeNode)?.play(amplitude)
         }

@@ -34,11 +34,11 @@ class TouchEnabledShapeNode: SKShapeNode
         addChild(label)
     }
     
-    var frequency: Double = 440
+    var frequency: Float = 440
     {
         didSet
         {
-            mandolin.mandolin.frequency.value = Float(frequency)
+            mandolin.setFrequency(frequency)
             
             label.text = "\(Int(frequency)) Hz"
             
@@ -46,9 +46,9 @@ class TouchEnabledShapeNode: SKShapeNode
         }
     }
 
-    func play(amplitude: Double)
+    func play(amplitude: Float)
     {
-        mandolin.mandolin.amplitude.value = Float(amplitude)
+        mandolin.setAmplitude(amplitude)
         
         mandolin.playForDuration(3.0);
     }
