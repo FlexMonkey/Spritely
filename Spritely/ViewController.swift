@@ -29,14 +29,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     let boxHeight = CGFloat(30)
 
     let longPressGestureRecogniser: UILongPressGestureRecognizer!
+    let conductor = Conductor()
     
     override init()
     {
         super.init()
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
-        
-        InstrumentsProvider.initialise()
     }
 
     required init(coder aDecoder: NSCoder)
@@ -44,8 +43,6 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         super.init(coder: aDecoder)
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
-        
-        InstrumentsProvider.initialise()
     }
     
     var selectedBox: TouchEnabledShapeNode?
@@ -151,6 +148,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: actualWidth, height: boxHeight))
         box.physicsBody?.dynamic = false
         box.physicsBody?.restitution = 0.5
+        box.conductor = conductor
         box.delegate = self
         
         let frequencyIndex = Int(round((actualWidth - minBoxLength) / (maxBoxLength - minBoxLength) * CGFloat(frequencies.count - 1)))
@@ -307,13 +305,18 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         {
             let amplitude = Float(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
 
-            (contact.bodyA.node as? TouchEnabledShapeNode)?.play(amplitude)
+            let frequency = (contact.bodyA.node as? TouchEnabledShapeNode)?.frequency
+                
+            conductor.play(frequency!, amplitude: amplitude)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
             let amplitude = Float(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1500)
   
-            (contact.bodyB.node as? TouchEnabledShapeNode)?.play(amplitude)
+//            (contact.bodyB.node as? TouchEnabledShapeNode)?.play(amplitude)
+            let frequency = (contact.bodyB.node as? TouchEnabledShapeNode)?.frequency
+            
+            conductor.play(frequency!, amplitude: amplitude)
         }
         
         // wrap around body if other body is floor....
