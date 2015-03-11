@@ -34,7 +34,7 @@ class TouchEnabledShapeNode: SKShapeNode
         didSet
         {
             label.text = "\(Int(frequency)) Hz"
-            label.position = CGPoint(x: 0, y: 1 - label.frame.height / 2)
+            setLabelRotation()
         }
     }
 
@@ -48,8 +48,6 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!)
     {
-        println("touchesCancelled")
-        
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
@@ -58,11 +56,35 @@ class TouchEnabledShapeNode: SKShapeNode
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
     {
-        println("touchesEnded")
-        
         if let delegate = delegate
         {
             delegate.touchEnabledShapeNodeSelected(nil)
+        }
+    }
+    
+
+    override var zRotation: CGFloat
+    {
+        didSet
+        {
+            super.zRotation = zRotation
+            
+            setLabelRotation()
+        }
+    }
+
+    private func setLabelRotation()
+    {
+        if zRotation > CGFloat(M_PI * 0.25) && zRotation < CGFloat(M_PI * 1.5)
+        {
+            
+            label.zRotation = CGFloat(M_PI)
+            label.position = CGPoint(x: 0, y: 0 + label.frame.height / 2)
+        }
+        else
+        {
+            label.zRotation = 0
+            label.position = CGPoint(x: 0, y: 1 - label.frame.height / 2)
         }
     }
     
