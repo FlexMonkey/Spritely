@@ -51,12 +51,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         {
             if let previousSelection = oldValue
             {
-                previousSelection.fillColor = UIColor.clearColor()
+                previousSelection.selected = false
             }
             
             if let newSelection = selectedBox
             {
-                newSelection.fillColor = UIColor.whiteColor()
+                newSelection.selected = true
                 
                 view.removeGestureRecognizer(longPressGestureRecogniser)
             }
@@ -138,7 +138,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.addChild(node)
     }
     
-    func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat)
+    func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat) -> TouchEnabledShapeNode
     {
         let actualWidth = max(min(width, maxBoxLength), minBoxLength)
         
@@ -159,6 +159,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         box.physicsBody?.categoryBitMask = boxCategoryBitMask
         
         scene.addChild(box)
+        
+        return box
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
@@ -166,7 +168,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         return true
     }
 
-    var creatingBox: SKShapeNode?
+    var creatingBox: TouchEnabledShapeNode?
     
     func longPressHandler(recogniser: UILongPressGestureRecognizer)
     {
@@ -217,10 +219,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 panGestureOrigin = CGPoint(x: recogniser.locationInView(view).x,
                     y: view.frame.height - recogniser.locationInView(view).y)
                 
-                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxHeight, height: boxHeight))
-                creatingBox!.position = panGestureOrigin!
-                
-                scene.addChild(creatingBox!)
+                creatingBox = createBox(position: panGestureOrigin!, rotation: 0, width: boxHeight)
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
@@ -231,12 +230,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
                 
-                creatingBox = SKShapeNode(rectOfSize: CGSize(width: boxWidth, height: boxHeight))
-                creatingBox!.position = panGestureOrigin!
+                let boxRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
                 
-                creatingBox!.zRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
-                
-                scene.addChild(creatingBox!)
+                creatingBox = createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
             }
             else
             {
