@@ -37,6 +37,15 @@ class TouchEnabledShapeNode: SKShapeNode
             setLabelRotation()
         }
     }
+    
+    var selected: Bool = false
+    {
+        didSet
+        {
+            fillColor = selected ? UIColor.whiteColor() : UIColor.clearColor()
+            label.fontColor = selected ? UIColor.blackColor() : UIColor.whiteColor()
+        }
+    }
 
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
