@@ -75,7 +75,8 @@ class TouchEnabledShapeNode: SKShapeNode
 
     private func setLabelRotation()
     {
-        if zRotation > CGFloat(M_PI * 0.5) && zRotation < CGFloat(M_PI * 1.5)
+        if ((zRotation > CGFloat(M_PI * 0.5) && zRotation < CGFloat(M_PI * 1.5))) ||
+            ((zRotation < 0 - CGFloat(M_PI * 0.5) && zRotation > 0 - CGFloat(M_PI * 1.5)))
         {
             label.zRotation = CGFloat(M_PI)
             label.position = CGPoint(x: 0, y: 0 + label.frame.height / 2)

@@ -17,7 +17,9 @@ class BarInstrument: AKInstrument
         addNoteProperty(note.frequency)
         addNoteProperty(note.amplitude)
 
-        let instrument = AKVibes()
+        // AKMarimba,AKVibes, AKMandolin
+        
+        let instrument = AKVibes() // AKVibes()
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
         connect(instrument)
