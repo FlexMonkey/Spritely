@@ -8,18 +8,62 @@
 
 import Foundation
 
-class BarInstrument: AKInstrument
+class MarimbaInstrument: AKInstrument
 {
-    override init() {
+    override init()
+    {
         super.init()
         
         let note = BarNote()
         addNoteProperty(note.frequency)
         addNoteProperty(note.amplitude)
 
-        // AKMarimba,AKVibes, AKMandolin
+        let instrument = AKMarimba()
         
-        let instrument = AKVibes() // AKVibes()
+        instrument.stickHardness = 0.5.ak
+        instrument.doubleStrikePercentage = 100.ak
+        instrument.tripleStrikePercentage = 100.ak
+        instrument.frequency = note.frequency
+        instrument.amplitude = note.amplitude
+        connect(instrument)
+        
+        connect(AKAudioOutput(audioSource: instrument))
+    }
+}
+
+class VibesInstrument: AKInstrument
+{
+    override init()
+    {
+        super.init()
+        
+        let note = BarNote()
+        addNoteProperty(note.frequency)
+        addNoteProperty(note.amplitude)
+        
+        let instrument = AKVibes()
+        
+        instrument.frequency = note.frequency
+        instrument.amplitude = note.amplitude
+        connect(instrument)
+        
+        connect(AKAudioOutput(audioSource: instrument))
+    }
+}
+
+class MandolinInstrument: AKInstrument
+{
+    override init()
+    {
+        super.init()
+        
+        let note = BarNote()
+        addNoteProperty(note.frequency)
+        addNoteProperty(note.amplitude)
+        
+        let instrument = AKMandolin()
+        
+        instrument.bodySize = 0.7.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
         connect(instrument)
@@ -43,4 +87,11 @@ class BarNote: AKNote {
         self.frequency.value = frequency
         self.amplitude.value = amplitude
     }
+}
+
+enum Instruments: String
+{
+    case vibes = "Vibes"
+    case marimba = "Marimba"
+    case mandolin = "Mandolin"
 }

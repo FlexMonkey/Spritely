@@ -4,7 +4,6 @@
 //
 //  Created by Simon Gladman on 05/03/2015.
 //  Copyright (c) 2015 Simon Gladman. All rights reserved.
-//
 
 import UIKit
 import SpriteKit
@@ -31,9 +30,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     let longPressGestureRecogniser: UILongPressGestureRecognizer!
     let conductor = Conductor()
     
+    let newInstrumentAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+    
     override init()
     {
         super.init()
+        
+        createNewInstrumentActionSheet()
         
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
     }
@@ -42,7 +45,23 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         super.init(coder: aDecoder)
         
+        createNewInstrumentActionSheet()
+        
         longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+    }
+    
+    func createNewInstrumentActionSheet()
+    {
+        for instrument in [Instruments.vibes, Instruments.marimba, Instruments.mandolin]
+        {
+            let instrumentAction = UIAlertAction(title: instrument.rawValue, style: UIAlertActionStyle.Default, handler: assignInstrumentToBall)
+            
+            newInstrumentAlertController.addAction(instrumentAction)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: cancelBallCreation)
+        
+        newInstrumentAlertController.addAction(cancelAction)
     }
     
     var selectedBox: TouchEnabledShapeNode?
@@ -114,30 +133,56 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         floor.physicsBody?.categoryBitMask =   floorCategoryBitMask
         
         createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
-        createBall(position: CGPoint(x: view.frame.width / 2, y: view.frame.height))
+        //createBall(position: CGPoint(x: view.frame.width / 2, y: view.frame.height))
 
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
     }
     
+    var newBallNode: ShapeNodeWithOrigin?
+    
     func createBall(#position: CGPoint)
     {
-        let node = ShapeNodeWithOrigin(circleOfRadius: 20)
-        let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
-        
-        node.position = position
-        node.physicsBody = nodePhysicsBody
-        
-        node.physicsBody?.contactTestBitMask = 0b0001
-        node.physicsBody?.collisionBitMask = 0b1000
-        node.physicsBody?.categoryBitMask =  ballCategoryBitMask
+        newBallNode = ShapeNodeWithOrigin(circleOfRadius: 20)
 
-        node.startingPostion = position
+        newBallNode?.position = position
+        newBallNode?.startingPostion = position
         
-        scene.addChild(node)
+        scene.addChild(newBallNode!)
+        
+        let newInstrumentAlertPosition = CGPoint(x: position.x - 20, y: view.frame.height - position.y - 20)
+        
+        newInstrumentAlertController.popoverPresentationController?.sourceRect = CGRect(x: newInstrumentAlertPosition.x, y: newInstrumentAlertPosition.y, width: 40, height: 40)
+        
+        newInstrumentAlertController.popoverPresentationController?.sourceView = self.view
+        
+        presentViewController(newInstrumentAlertController, animated: true, completion: nil)
     }
     
+    func assignInstrumentToBall(value : UIAlertAction!) -> Void
+    {
+        if let newBallNode = newBallNode
+        {
+            let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
+            
+            newBallNode.instrument = Instruments(rawValue: value.title)
+            
+            newBallNode.physicsBody = nodePhysicsBody
+            
+            newBallNode.physicsBody?.contactTestBitMask = 0b0001
+            newBallNode.physicsBody?.collisionBitMask = 0b1000
+            newBallNode.physicsBody?.categoryBitMask =  ballCategoryBitMask
+        }
+    }
+    
+    func cancelBallCreation(value : UIAlertAction!) -> Void
+    {
+        newBallNode?.removeFromParent()
+        newBallNode = nil
+    }
+    
+
     func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat) -> TouchEnabledShapeNode
     {
         let actualWidth = max(min(width, maxBoxLength), minBoxLength)
@@ -301,8 +346,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             let amplitude = Float(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
 
             let frequency = (contact.bodyA.node as? TouchEnabledShapeNode)?.frequency
+            
+            let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument ?? Instruments.vibes
                 
-            conductor.play(frequency!, amplitude: amplitude)
+            conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
@@ -310,7 +357,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
 
             let frequency = (contact.bodyB.node as? TouchEnabledShapeNode)?.frequency
             
-            conductor.play(frequency!, amplitude: amplitude)
+            let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument ?? Instruments.vibes
+            
+            conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
         }
         
         // wrap around body if other body is floor....

@@ -8,16 +8,32 @@
 
 class Conductor {
 
-    var barInstrument = BarInstrument()
+    var marimbaInstrument = MarimbaInstrument()
+    var vibesInstrument = VibesInstrument()
+    var mandolinInstrument = MandolinInstrument()
 
-    init() {
-        AKOrchestra.addInstrument(barInstrument)
+    init()
+    {
+        AKOrchestra.addInstrument(marimbaInstrument)
+        AKOrchestra.addInstrument(vibesInstrument)
+        AKOrchestra.addInstrument(mandolinInstrument)
         AKOrchestra.start()
     }
     
-    func play(frequency: Float, amplitude: Float) {
+    func play(frequency: Float, amplitude: Float, instrument: Instruments)
+    {
         let barNote = BarNote(frequency: frequency, amplitude: amplitude)
         barNote.duration.value = 3.0
-        barInstrument.playNote(barNote)
+        
+        switch instrument
+        {
+        case .mandolin:
+            mandolinInstrument.playNote(barNote)
+        case .marimba:
+            marimbaInstrument.playNote(barNote)
+        case .vibes:
+            vibesInstrument.playNote(barNote)
+        }
     }
 }
+

@@ -12,4 +12,6 @@ import SpriteKit
 class ShapeNodeWithOrigin: SKShapeNode
 {
     var startingPostion: CGPoint?
+    
+    var instrument: Instruments?
 }
