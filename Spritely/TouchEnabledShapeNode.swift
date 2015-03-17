@@ -47,6 +47,32 @@ class TouchEnabledShapeNode: SKShapeNode
         }
     }
 
+    func displayCollision(color: UIColor)
+    {
+        let newNode = SKShapeNode(path: self.path)
+        
+        newNode.strokeColor = color
+        
+        addChild(newNode)
+        
+        let boundingBox = CGPathGetPathBoundingBox(self.path)
+        let targetWidth = boundingBox.width + 50
+        let targetHeight = boundingBox.height + 50
+        let scaleX = targetWidth / boundingBox.width
+        let scaleY = targetHeight / boundingBox.height
+        
+        let scaleAction = SKAction.scaleXTo(scaleX, y: scaleY , duration: 0.25)
+        scaleAction.timingMode = SKActionTimingMode.EaseOut
+
+        
+        let fadeAction = SKAction.fadeAlphaTo(0, duration: 0.25)
+        fadeAction.timingMode = SKActionTimingMode.EaseOut
+        
+        let actionGroup = SKAction.group([scaleAction, fadeAction])
+        
+        newNode.runAction(actionGroup, completion: { newNode.removeFromParent() })
+    }
+    
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
         if let delegate = delegate

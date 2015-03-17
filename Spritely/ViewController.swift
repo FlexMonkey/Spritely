@@ -347,9 +347,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
 
             let frequency = (contact.bodyA.node as? TouchEnabledShapeNode)?.frequency
             
-            let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument ?? Instruments.vibes
+            if let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument
+            {
+                conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
                 
-            conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
+                (contact.bodyA.node as? TouchEnabledShapeNode)?.displayCollision((contact.bodyB.node as? ShapeNodeWithOrigin)!.getColor())
+            }
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
@@ -357,9 +360,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
 
             let frequency = (contact.bodyB.node as? TouchEnabledShapeNode)?.frequency
             
-            let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument ?? Instruments.vibes
-            
-            conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
+            if let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument
+            {
+                conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
+                
+                (contact.bodyB.node as? TouchEnabledShapeNode)?.displayCollision((contact.bodyB.node as? ShapeNodeWithOrigin)!.getColor())
+            }
         }
         
         // wrap around body if other body is floor....
