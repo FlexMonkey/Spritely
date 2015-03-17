@@ -341,30 +341,36 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
    
         // play a tone based on velocity (amplitude) and are (frequency) if either body is a box...
         
+        var box: TouchEnabledShapeNode?
+        var ball: ShapeNodeWithOrigin?
+        
         if contact.bodyA.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Float(sqrt((contact.bodyB.velocity.dx * contact.bodyB.velocity.dx) + (contact.bodyB.velocity.dy * contact.bodyB.velocity.dy)) / 1500)
-
-            let frequency = (contact.bodyA.node as? TouchEnabledShapeNode)?.frequency
-            
-            if let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument
-            {
-                conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
-                
-                (contact.bodyA.node as? TouchEnabledShapeNode)?.displayCollision((contact.bodyB.node as? ShapeNodeWithOrigin)!.getColor())
-            }
+            box = (contact.bodyA.node as? TouchEnabledShapeNode)
+            ball = (contact.bodyB.node as? ShapeNodeWithOrigin)
         }
         else if contact.bodyB.categoryBitMask == boxCategoryBitMask
         {
-            let amplitude = Float(sqrt((contact.bodyA.velocity.dx * contact.bodyA.velocity.dx) + (contact.bodyA.velocity.dy * contact.bodyA.velocity.dy)) / 1500)
-
-            let frequency = (contact.bodyB.node as? TouchEnabledShapeNode)?.frequency
-            
-            if let instrument = (contact.bodyB.node as? ShapeNodeWithOrigin)?.instrument
+            box = (contact.bodyB.node as? TouchEnabledShapeNode)
+            ball = (contact.bodyA.node as? ShapeNodeWithOrigin)
+        }
+        
+        if let box = box
+        {
+            if let ball = ball
             {
-                conductor.play(frequency!, amplitude: amplitude, instrument: instrument)
+                let ballPhysicsBody = ball.physicsBody!
                 
-                (contact.bodyB.node as? TouchEnabledShapeNode)?.displayCollision((contact.bodyB.node as? ShapeNodeWithOrigin)!.getColor())
+                let amplitude = Float(sqrt((ballPhysicsBody.velocity.dx * ballPhysicsBody.velocity.dx) + (ballPhysicsBody.velocity.dy * ballPhysicsBody.velocity.dy)) / 1500)
+                
+                let frequency = box.frequency
+                
+                if let instrument = ball.instrument
+                {
+                    conductor.play(frequency, amplitude: amplitude, instrument: instrument)
+                    
+                    box.displayCollision(ball.getColor())
+                }
             }
         }
         

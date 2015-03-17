@@ -64,7 +64,6 @@ class TouchEnabledShapeNode: SKShapeNode
         let scaleAction = SKAction.scaleXTo(scaleX, y: scaleY , duration: 0.25)
         scaleAction.timingMode = SKActionTimingMode.EaseOut
 
-        
         let fadeAction = SKAction.fadeAlphaTo(0, duration: 0.25)
         fadeAction.timingMode = SKActionTimingMode.EaseOut
         
