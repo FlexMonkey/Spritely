@@ -20,7 +20,7 @@ class Conductor {
         AKOrchestra.start()
     }
     
-    func play(frequency: Float, amplitude: Float, instrument: Instruments)
+    func play(#frequency: Float, amplitude: Float, instrument: Instruments)
     {
         let barNote = BarNote(frequency: frequency, amplitude: amplitude)
         barNote.duration.value = 3.0

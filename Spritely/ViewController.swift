@@ -166,7 +166,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         {
             let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
             
-            newBallNode.instrument = Instruments(rawValue: value.title)
+            newBallNode.instrument = Instruments(rawValue: value.title) ?? Instruments.mandolin
             
             newBallNode.physicsBody = nodePhysicsBody
             
@@ -363,14 +363,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 let amplitude = Float(sqrt((ballPhysicsBody.velocity.dx * ballPhysicsBody.velocity.dx) + (ballPhysicsBody.velocity.dy * ballPhysicsBody.velocity.dy)) / 1500)
                 
-                let frequency = box.frequency
+                conductor.play(frequency: box.frequency, amplitude: amplitude, instrument: ball.instrument)
                 
-                if let instrument = ball.instrument
-                {
-                    conductor.play(frequency, amplitude: amplitude, instrument: instrument)
-                    
-                    box.displayCollision(ball.getColor())
-                }
+                box.displayCollision(ball.getColor())
             }
         }
         

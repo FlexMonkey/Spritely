@@ -13,7 +13,7 @@ class ShapeNodeWithOrigin: SKShapeNode
 {
     var startingPostion: CGPoint?
     
-    var instrument: Instruments?
+    var instrument: Instruments = Instruments.mandolin
     {
         didSet
         {
@@ -25,19 +25,16 @@ class ShapeNodeWithOrigin: SKShapeNode
     {
         var returnColor: UIColor = UIColor.whiteColor()
         
-        if let instrument = instrument
+        switch instrument
         {
-            switch instrument
-            {
-            case Instruments.mandolin:
-                returnColor = UIColor.magentaColor()
-                
-            case Instruments.marimba:
-                returnColor = UIColor.yellowColor();
-                
-            case Instruments.vibes:
-                returnColor = UIColor.cyanColor()
-            }
+        case Instruments.mandolin:
+            returnColor = UIColor.magentaColor()
+            
+        case Instruments.marimba:
+            returnColor = UIColor.yellowColor();
+            
+        case Instruments.vibes:
+            returnColor = UIColor.cyanColor()
         }
         
         return returnColor
