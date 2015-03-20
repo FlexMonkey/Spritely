@@ -235,26 +235,33 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         // if there's no box selected, start drawing one, otherwise move selected box....
         
-        if selectedBox != nil
+        if let selectedBox = selectedBox
         {
+            let currentGestureLocation = recogniser.locationInView(view)
+            
             if recogniser.state == UIGestureRecognizerState.Began
             {
-                panGestureOrigin = recogniser.locationInView(view)
+                panGestureOrigin = currentGestureLocation
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
-                let currentGestureLocation = recogniser.locationInView(view)
+                selectedBox.position.x += currentGestureLocation.x - panGestureOrigin!.x
+                selectedBox.position.y -= currentGestureLocation.y - panGestureOrigin!.y
                 
-                selectedBox!.position.x += currentGestureLocation.x - panGestureOrigin!.x
-                selectedBox!.position.y -= currentGestureLocation.y - panGestureOrigin!.y
+                selectedBox.alpha = (currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50) ? 0.25 : 1
                 
                 panGestureOrigin = recogniser.locationInView(view)
             }
             else
             {
+                if currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50
+                {
+                    selectedBox.removeFromParent()
+                }
+                
                 rotateGestureAngleOrigin = nil
                 panGestureOrigin = nil
-                selectedBox = nil
+                unselectBox()
             }
         }
         else
@@ -298,10 +305,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 rotateGestureAngleOrigin = nil
             }
         }
-        
-        
     }
 
+    func unselectBox()
+    {
+        selectedBox = nil
+    }
+    
     func rotateHandler(recogniser: UIRotationGestureRecognizer)
     {
         if selectedBox != nil
