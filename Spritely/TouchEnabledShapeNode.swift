@@ -47,13 +47,16 @@ class TouchEnabledShapeNode: SKShapeNode
         }
     }
 
-    func displayCollision(color: UIColor)
+    func displayCollision(#strokeColor: UIColor, fillColor: UIColor = UIColor.clearColor())
     {
         let newNode = SKShapeNode(path: self.path)
         
-        newNode.strokeColor = color
+        newNode.strokeColor = strokeColor
+        newNode.fillColor = fillColor
+        newNode.position = position
+        newNode.zRotation = zRotation
         
-        addChild(newNode)
+        scene?.addChild(newNode)
         
         let boundingBox = CGPathGetPathBoundingBox(self.path)
         let targetWidth = boundingBox.width + 50
@@ -69,7 +72,14 @@ class TouchEnabledShapeNode: SKShapeNode
         
         let actionGroup = SKAction.group([scaleAction, fadeAction])
         
-        newNode.runAction(actionGroup, completion: { newNode.removeFromParent() })
+        newNode.runAction(actionGroup, completion: { newNode.removeFromParent(); })
+    }
+    
+    func animatedRemoveFromParent()
+    {
+        displayCollision(strokeColor: UIColor.lightGrayColor(), fillColor: UIColor.darkGrayColor())
+        
+        super.removeFromParent()
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)

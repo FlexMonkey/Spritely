@@ -256,7 +256,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             {
                 if currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50
                 {
-                    selectedBox.removeFromParent()
+                    selectedBox.animatedRemoveFromParent()
                 }
                 
                 rotateGestureAngleOrigin = nil
@@ -375,7 +375,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 conductor.play(frequency: box.frequency, amplitude: amplitude, instrument: ball.instrument)
                 
-                box.displayCollision(ball.getColor())
+                box.displayCollision(strokeColor: ball.getColor())
             }
         }
         
