@@ -375,7 +375,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 conductor.play(frequency: box.frequency, amplitude: amplitude, instrument: ball.instrument)
                 
-                box.displayCollision(strokeColor: ball.getColor())
+                box.pulse(strokeColor: ball.getColor())
             }
         }
         

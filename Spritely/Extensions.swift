@@ -34,3 +34,33 @@ extension Float
     }
 }
 
+extension SKShapeNode
+{
+    func pulse(#strokeColor: UIColor, fillColor: UIColor = UIColor.clearColor())
+    {
+        let newNode = SKShapeNode(path: self.path)
+        
+        newNode.strokeColor = strokeColor
+        newNode.fillColor = fillColor
+        newNode.position = position
+        newNode.zRotation = zRotation
+        
+        scene?.addChild(newNode)
+        
+        let boundingBox = CGPathGetPathBoundingBox(self.path)
+        let targetWidth = boundingBox.width + 50
+        let targetHeight = boundingBox.height + 50
+        let scaleX = targetWidth / boundingBox.width
+        let scaleY = targetHeight / boundingBox.height
+        
+        let scaleAction = SKAction.scaleXTo(scaleX, y: scaleY , duration: 0.25)
+        scaleAction.timingMode = SKActionTimingMode.EaseOut
+        
+        let fadeAction = SKAction.fadeAlphaTo(0, duration: 0.25)
+        fadeAction.timingMode = SKActionTimingMode.EaseOut
+        
+        let actionGroup = SKAction.group([scaleAction, fadeAction])
+        
+        newNode.runAction(actionGroup, completion: { newNode.removeFromParent(); })
+    }
+}
