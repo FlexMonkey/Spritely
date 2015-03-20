@@ -164,7 +164,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         if let newBallNode = newBallNode
         {
-            let nodePhysicsBody = SKPhysicsBody(circleOfRadius: 20)
+            let nodePhysicsBody = SKPhysicsBody(polygonFromPath: newBallNode.path)
             
             newBallNode.instrument = Instruments(rawValue: value.title) ?? Instruments.mandolin
             
@@ -190,7 +190,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: actualWidth, height: boxHeight))
         box.position = position
         box.zRotation = rotation
-        box.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: actualWidth, height: boxHeight))
+        box.physicsBody = SKPhysicsBody(polygonFromPath: box.path)
         box.physicsBody?.dynamic = false
         box.physicsBody?.restitution = 0.5
         box.delegate = self
