@@ -14,6 +14,8 @@
 		3E39581F1AA8F2C5007925EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581D1AA8F2C5007925EA /* LaunchScreen.xib */; };
 		3E39582B1AA8F2C5007925EA /* SpritelyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */; };
 		3E3958361AAB0416007925EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3958351AAB0416007925EA /* Extensions.swift */; };
+		3ECF4F3B1ABFF656002FB11E /* BallEditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */; };
+		3ECF4F3E1ABFF7B7002FB11E /* SpriteKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECF4F3D1ABFF7B7002FB11E /* SpriteKitHelper.swift */; };
 		BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */; };
 		BE7E55B91AAC3B1300DACDE6 /* AKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54591AAC3B1300DACDE6 /* AKEvent.m */; };
 		BE7E55BA1AAC3B1300DACDE6 /* AKInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E545C1AAC3B1300DACDE6 /* AKInstrument.m */; };
@@ -186,6 +188,8 @@
 		3E3958291AA8F2C5007925EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpritelyTests.swift; sourceTree = "<group>"; };
 		3E3958351AAB0416007925EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallEditorToolbar.swift; sourceTree = "<group>"; };
+		3ECF4F3D1ABFF7B7002FB11E /* SpriteKitHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteKitHelper.swift; sourceTree = "<group>"; };
 		BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchEnabledShapeNode.swift; sourceTree = "<group>"; };
 		BE7E54581AAC3B1300DACDE6 /* AKEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKEvent.h; sourceTree = "<group>"; };
 		BE7E54591AAC3B1300DACDE6 /* AKEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKEvent.m; sourceTree = "<group>"; };
@@ -544,6 +548,7 @@
 		3E3958111AA8F2C5007925EA /* Spritely */ = {
 			isa = PBXGroup;
 			children = (
+				3ECF4F3C1ABFF79A002FB11E /* spriteKit */,
 				BE7E564D1AAC3BE500DACDE6 /* audioKit */,
 				3E3958341AAB0407007925EA /* extensions */,
 				BE7E54521AAACF3F00DACDE6 /* components */,
@@ -590,11 +595,20 @@
 			name = extensions;
 			sourceTree = "<group>";
 		};
+		3ECF4F3C1ABFF79A002FB11E /* spriteKit */ = {
+			isa = PBXGroup;
+			children = (
+				3ECF4F3D1ABFF7B7002FB11E /* SpriteKitHelper.swift */,
+			);
+			name = spriteKit;
+			sourceTree = "<group>";
+		};
 		BE7E54521AAACF3F00DACDE6 /* components */ = {
 			isa = PBXGroup;
 			children = (
 				BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */,
 				BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */,
+				3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */,
 			);
 			name = components;
 			sourceTree = "<group>";
@@ -1351,6 +1365,7 @@
 				BE7E56381AAC3B1300DACDE6 /* AKHighPassButterworthFilter.m in Sources */,
 				BE7E56271AAC3B1300DACDE6 /* AKDopplerEffect.m in Sources */,
 				BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */,
+				3ECF4F3E1ABFF7B7002FB11E /* SpriteKitHelper.swift in Sources */,
 				BE7E55C41AAC3B1300DACDE6 /* CsoundObj.m in Sources */,
 				BE7E55E51AAC3B1300DACDE6 /* AKLineSegments.m in Sources */,
 				BE7E56181AAC3B1300DACDE6 /* AKRandomNumbers.m in Sources */,
@@ -1412,6 +1427,7 @@
 				BE7E56021AAC3B1300DACDE6 /* AKMandolin.m in Sources */,
 				BE7E56141AAC3B1300DACDE6 /* AKSimpleWaveGuideModel.m in Sources */,
 				BE7E56311AAC3B1300DACDE6 /* AKMoogLadder.m in Sources */,
+				3ECF4F3B1ABFF656002FB11E /* BallEditorToolbar.swift in Sources */,
 				BE7E55CF1AAC3B1300DACDE6 /* AudioKit.swift in Sources */,
 				BE7E55D11AAC3B1300DACDE6 /* AKTrackedAmplitude.m in Sources */,
 				BE7E55E61AAC3B1300DACDE6 /* AKRandomDistributionTable.m in Sources */,

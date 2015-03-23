@@ -10,6 +10,13 @@ import SpriteKit
 
 class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
 {
+    /*
+        To do 
+            different shapes for different instruments - equalateralTriangleOfRadius()
+            ball editor at top
+
+    */
+    
     let frequencies: [Float] = [130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998, 207.652, 220, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989, 783.991, 830.609, 880, 932.328, 987.767 ].sorted({$0 > $1})
     
     let minBoxLength: CGFloat = 100
@@ -31,6 +38,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     let conductor = Conductor()
     
     let newInstrumentAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+    
+    let ballEditorToolbar = BallEditorToolbar(frame: CGRectZero)
     
     override init()
     {
@@ -109,28 +118,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.scaleMode = .ResizeFill
         skView.presentScene(scene)
         
-        let leftWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
-        leftWall.position = CGPoint(x: -2, y: view.frame.height / 2)
-        leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
-        leftWall.physicsBody?.dynamic = false
-        scene.addChild(leftWall)
-
-        let rightWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
-        rightWall.position = CGPoint(x: view.frame.width + 2, y: view.frame.height / 2)
-        rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: view.frame.height))
-        rightWall.physicsBody?.dynamic = false
-        scene.addChild(rightWall)
-        
-        
-        let floor = SKShapeNode(rectOfSize: CGSize(width: view.frame.width, height: 2))
-        floor.position = CGPoint(x: view.frame.width / 2, y: -2)
-        floor.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: view.frame.width, height: 2))
-        floor.physicsBody?.dynamic = false
-        scene.addChild(floor)
-        
-        floor.physicsBody?.contactTestBitMask = 0b0001
-        floor.physicsBody?.collisionBitMask =   0b0001
-        floor.physicsBody?.categoryBitMask =   floorCategoryBitMask
+        SpriteKitHelper.createWalls(view: view, scene: scene, floorCategoryBitMask: floorCategoryBitMask)
         
         createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
         //createBall(position: CGPoint(x: view.frame.width / 2, y: view.frame.height))
@@ -138,6 +126,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
+        
+        view.addSubview(ballEditorToolbar)
     }
     
     var newBallNode: ShapeNodeWithOrigin?
@@ -173,7 +163,24 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             newBallNode.physicsBody?.contactTestBitMask = 0b0001
             newBallNode.physicsBody?.collisionBitMask = 0b1000
             newBallNode.physicsBody?.categoryBitMask =  ballCategoryBitMask
+            
+            populateToolbar()
         }
+    }
+    
+    func populateToolbar()
+    {
+        var ballsArray: [ShapeNodeWithOrigin] = [ShapeNodeWithOrigin]()
+        
+        for ball in scene.children
+        {
+            if let ball = ball as? ShapeNodeWithOrigin
+            {
+                ballsArray.append(ball)
+            }
+        }
+        
+        ballEditorToolbar.ballsArray = ballsArray
     }
     
     func cancelBallCreation(value : UIAlertAction!) -> Void
@@ -409,7 +416,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
 
     override func viewDidLayoutSubviews()
     {
+        let topMargin = topLayoutGuide.length
+
         skView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        
+        ballEditorToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: 50)
     }
 
 
