@@ -169,45 +169,28 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     
     func instrumentBallDeleted(instrumentId id: String)
     {
-        for ball in scene.children
+        if let ball = getInstrumentBallById(id)
         {
-            if let ball = ball as? ShapeNodeWithOrigin
-            {
-                if ball.id == id
-                {
-                    ball.animatedRemoveFromParent()
-                }
-            }
+            ball.animatedRemoveFromParent()
         }
     }
     
     func instrumentBallMoved(instrumentId id: String, newX: CGFloat)
     {
-        for ball in scene.children
+        if let ball = getInstrumentBallById(id)
         {
-            if let ball = ball as? ShapeNodeWithOrigin
-            {
-                if ball.id == id
-                {
-                    ball.startingPostion?.x = newX // add starting position invalid flag to grey out during this run
-                }
-            }
+            ball.startingPostion?.x = newX // add starting position invalid flag to grey out during this run
         }
+    }
+    
+    func getInstrumentBallById(id: String) -> ShapeNodeWithOrigin?
+    {
+        return scene.children.filter({ $0 is ShapeNodeWithOrigin && ($0 as ShapeNodeWithOrigin).id == id })[0] as? ShapeNodeWithOrigin
     }
     
     func populateToolbar()
     {
-        var ballsArray: [ShapeNodeWithOrigin] = [ShapeNodeWithOrigin]()
-        
-        for ball in scene.children
-        {
-            if let ball = ball as? ShapeNodeWithOrigin
-            {
-                ballsArray.append(ball)
-            }
-        }
-        
-        ballEditorToolbar.ballsArray = ballsArray
+        ballEditorToolbar.ballsArray = scene.children.filter({ $0 is ShapeNodeWithOrigin }) as [ShapeNodeWithOrigin]
     }
     
     func cancelBallCreation(value : UIAlertAction!) -> Void
