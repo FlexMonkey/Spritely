@@ -63,4 +63,14 @@ extension SKShapeNode
         
         newNode.runAction(actionGroup, completion: { newNode.removeFromParent(); })
     }
+    
+    
+    func animatedRemoveFromParent()
+    {
+        pulse(strokeColor: UIColor.lightGrayColor(), fillColor: UIColor.darkGrayColor())
+        
+        removeFromParent()
+    }
+    
+    
 }

@@ -167,10 +167,22 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         }
     }
     
+    func instrumentBallDeleted(instrumentId id: String)
+    {
+        for ball in scene.children
+        {
+            if let ball = ball as? ShapeNodeWithOrigin
+            {
+                if ball.id == id
+                {
+                    ball.animatedRemoveFromParent()
+                }
+            }
+        }
+    }
+    
     func instrumentBallMoved(instrumentId id: String, newX: CGFloat)
     {
-        println("delegate - ball moved")
-        
         for ball in scene.children
         {
             if let ball = ball as? ShapeNodeWithOrigin

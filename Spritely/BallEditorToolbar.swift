@@ -74,6 +74,8 @@ class BallEditorToolbar: SKView
             {
                 selectedInstrument.position.x = touchX
                 
+                selectedInstrument.alpha = (touchX < 50 || touchX > frame.width - 50) ? 0.25 : 1
+                
                 if let delegate = delegate
                 {
                     delegate.instrumentBallMoved(instrumentId: selectedInstrument.id, newX: touchX)
@@ -90,6 +92,18 @@ class BallEditorToolbar: SKView
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
     {
+        let locationInView = touches.anyObject()?.locationInView(self)
+        
+        if locationInView?.x < 50 || locationInView?.x > frame.width - 50
+        {
+            if let delegate = delegate
+            {
+                delegate.instrumentBallDeleted(instrumentId: selectedInstrument!.id)
+            }
+            
+            selectedInstrument?.animatedRemoveFromParent()
+        }
+        
          selectedInstrument = nil
     }
     
@@ -127,5 +141,7 @@ class BallEditorToolbar: SKView
 protocol BallEditorToolbarDelegate
 {
     func instrumentBallMoved(#instrumentId: String, newX: CGFloat)
+    
+    func instrumentBallDeleted(#instrumentId: String)
 }
 

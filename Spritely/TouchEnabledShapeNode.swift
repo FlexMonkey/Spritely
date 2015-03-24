@@ -46,13 +46,6 @@ class TouchEnabledShapeNode: SKShapeNode
             label.fontColor = selected ? UIColor.blackColor() : UIColor.whiteColor()
         }
     }
-
-    func animatedRemoveFromParent()
-    {
-        pulse(strokeColor: UIColor.lightGrayColor(), fillColor: UIColor.darkGrayColor())
-        
-        removeFromParent()
-    }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
     {
