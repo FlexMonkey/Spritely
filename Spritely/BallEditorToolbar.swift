@@ -107,23 +107,21 @@ class BallEditorToolbar: SKView
          selectedInstrument = nil
     }
     
+
+    
     func selectInstrumentAtLocation(touchX: CGFloat)
     {
         selectedInstrument = nil
         
-        if let children = scene?.children
+        let children = scene?.children.filter({ $0 is ShapeNodeWithOrigin }) as [ShapeNodeWithOrigin]
+        
+        for node in children
         {
-            for node in children
+            if abs(node.position.x - touchX) < 20
             {
-                if let node = (node as? ShapeNodeWithOrigin)
-                {
-                    if abs(node.position.x - touchX) < 20
-                    {
-                        selectedInstrument = (node as ShapeNodeWithOrigin)
-                        
-                        break
-                    }
-                }
+                selectedInstrument = (node as ShapeNodeWithOrigin)
+                
+                break
             }
         }
     }
