@@ -11,6 +11,8 @@ import SpriteKit
 
 class ShapeNodeWithOrigin: SKShapeNode
 {
+    var id = NSUUID().UUIDString
+    
     var startingPostion: CGPoint?
     
     var instrument: Instruments = Instruments.mandolin

@@ -8,7 +8,7 @@
 import UIKit
 import SpriteKit
 
-class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate
+class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate, BallEditorToolbarDelegate
 {
     /*
         To do 
@@ -23,7 +23,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     let maxBoxLength: CGFloat = 700
     
     let skView = SKView()
-    var scene: SKScene!
+    var scene = SKScene()
     
     var panGestureOrigin: CGPoint?
     var rotateGestureAngleOrigin: CGFloat?
@@ -99,20 +99,18 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         super.viewDidLoad()
 
-        view.addGestureRecognizer(longPressGestureRecogniser)
+        skView.addGestureRecognizer(longPressGestureRecogniser)
         
         let panGestureRecogniser = UIPanGestureRecognizer(target: self, action: "panHandler:")
         panGestureRecogniser.maximumNumberOfTouches = 1
         panGestureRecogniser.delegate = self
-        view.addGestureRecognizer(panGestureRecogniser)
+        skView.addGestureRecognizer(panGestureRecogniser)
    
         let rotateGestureRecogniser = UIRotationGestureRecognizer(target: self, action: "rotateHandler:")
         rotateGestureRecogniser.delegate = self
-        view.addGestureRecognizer(rotateGestureRecogniser)
+        skView.addGestureRecognizer(rotateGestureRecogniser)
 
         view.addSubview(skView)
-        
-        scene = SKScene(size: view.bounds.size)
 
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .ResizeFill
@@ -127,6 +125,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
         
+        ballEditorToolbar.delegate = self
         view.addSubview(ballEditorToolbar)
     }
     
@@ -165,6 +164,22 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             newBallNode.physicsBody?.categoryBitMask =  ballCategoryBitMask
             
             populateToolbar()
+        }
+    }
+    
+    func instrumentBallMoved(instrumentId id: String, newX: CGFloat)
+    {
+        println("delegate - ball moved")
+        
+        for ball in scene.children
+        {
+            if let ball = ball as? ShapeNodeWithOrigin
+            {
+                if ball.id == id
+                {
+                    ball.startingPostion?.x = newX // add starting position invalid flag to grey out during this run
+                }
+            }
         }
     }
     
@@ -417,10 +432,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     override func viewDidLayoutSubviews()
     {
         let topMargin = topLayoutGuide.length
+        let toolbarHeight: CGFloat = 50
+        let sceneHeight = view.frame.height - topMargin - toolbarHeight
 
-        skView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+        skView.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
+        scene.size = CGSize(width: view.frame.width, height: sceneHeight)
         
-        ballEditorToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: 50)
+        ballEditorToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: toolbarHeight)
     }
 
 

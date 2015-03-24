@@ -11,7 +11,7 @@ import SpriteKit
 class TouchEnabledShapeNode: SKShapeNode
 {
     var delegate: TouchEnabledShapeNodeDelegate?
-    private let label = SKLabelNode(text: "Hello!")
+    private let label = SKLabelNode()
     
     override init()
     {
@@ -46,16 +46,7 @@ class TouchEnabledShapeNode: SKShapeNode
             label.fontColor = selected ? UIColor.blackColor() : UIColor.whiteColor()
         }
     }
-    
-    func foo(node: SKNode!, value: CGFloat)
-    {
-        if let node = node as? SKShapeNode
-        {
-            node.glowWidth = value * 4
-            println(value)
-        }
-    }
-    
+
     func animatedRemoveFromParent()
     {
         pulse(strokeColor: UIColor.lightGrayColor(), fillColor: UIColor.darkGrayColor())
