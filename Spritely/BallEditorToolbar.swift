@@ -45,9 +45,7 @@ class BallEditorToolbar: SKView
                 newBall.id = ball.id
                 newBall.strokeColor = ball.strokeColor
                 
-                let ballHeight = CGPathGetBoundingBox(ball.path).height; println("bounding box heioght \(ballHeight) frame.height = \(frame.height)")
-                
-                newBall.position = CGPoint(x: ball.startingPostion!.x, y: frame.height / 2)
+                newBall.position = CGPoint(x: ball.startingPostion!.x, y: frame.height / 2 )
                 
                 scene?.addChild(newBall)
             }
