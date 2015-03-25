@@ -153,9 +153,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         if let newBallNode = newBallNode
         {
-            let nodePhysicsBody = SKPhysicsBody(polygonFromPath: newBallNode.path)
-            
             newBallNode.instrument = Instruments(rawValue: value.title) ?? Instruments.mandolin
+            
+            // TODO: move this stuff into instument code :)
+            
+            let nodePhysicsBody = SKPhysicsBody(polygonFromPath: newBallNode.path)
             
             newBallNode.physicsBody = nodePhysicsBody
             
@@ -414,6 +416,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             
             nodeToReposition?.physicsBody = nil
             nodeToReposition?.position = CGPoint(x: nodeX, y: view.frame.height)
+            nodeToReposition?.zRotation = 0
             nodeToReposition?.physicsBody = physicsBodyToReposition
         }
         

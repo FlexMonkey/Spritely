@@ -70,7 +70,6 @@ class TouchEnabledShapeNode: SKShapeNode
             delegate.touchEnabledShapeNodeSelected(nil)
         }
     }
-    
 
     override var zRotation: CGFloat
     {

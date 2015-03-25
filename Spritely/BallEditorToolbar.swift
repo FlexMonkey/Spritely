@@ -30,8 +30,6 @@ class BallEditorToolbar: SKView
     
     override func didMoveToSuperview()
     {
-        backgroundColor = UIColor.redColor()
-        
         presentScene(SKScene())
     }
     
@@ -43,13 +41,15 @@ class BallEditorToolbar: SKView
             
             for ball in ballsArray
             {
-                let xyz = ShapeNodeWithOrigin(path: ball.path)
-                xyz.id = ball.id
-                xyz.strokeColor = ball.strokeColor
+                let newBall = ShapeNodeWithOrigin(path: ball.path)
+                newBall.id = ball.id
+                newBall.strokeColor = ball.strokeColor
                 
-                xyz.position = CGPoint(x: ball.startingPostion!.x, y: 25)
+                let ballHeight = CGPathGetBoundingBox(ball.path).height; println("bounding box heioght \(ballHeight) frame.height = \(frame.height)")
                 
-                scene?.addChild(xyz)
+                newBall.position = CGPoint(x: ball.startingPostion!.x, y: frame.height / 2)
+                
+                scene?.addChild(newBall)
             }
         }
     }
