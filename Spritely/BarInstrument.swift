@@ -20,9 +20,11 @@ class MarimbaInstrument: AKInstrument
 
         let instrument = AKMarimba()
         
-        instrument.stickHardness = 0.5.ak
+        instrument.stickHardness = 0.0025.ak
         instrument.doubleStrikePercentage = 100.ak
         instrument.tripleStrikePercentage = 100.ak
+        instrument.vibratoAmplitude = 5.ak
+        instrument.vibratoFrequency = 2.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
         connect(instrument)
@@ -43,6 +45,8 @@ class VibesInstrument: AKInstrument
         
         let instrument = AKVibes()
         
+        instrument.tremoloAmplitude = 5.ak
+        instrument.tremoloFrequency = 1.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
         connect(instrument)
@@ -63,7 +67,8 @@ class MandolinInstrument: AKInstrument
         
         let instrument = AKMandolin()
         
-        instrument.bodySize = 0.7.ak
+        instrument.bodySize = 0.8.ak
+        instrument.loopGain = 0.994.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
         connect(instrument)
