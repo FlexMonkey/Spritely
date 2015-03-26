@@ -38,13 +38,13 @@ class ShapeNodeWithOrigin: SKShapeNode
         case Instruments.vibes:
             let trianglePath = CGPathCreateMutable()
             
-            let vertexOne = angleToPoint(0, radius: 20)
+            let vertexOne = angleToPoint(90, radius: 20)
             CGPathMoveToPoint(trianglePath, nil, vertexOne.x, vertexOne.y)
             
-            let vertexTwo = angleToPoint(120, radius: 20)
+            let vertexTwo = angleToPoint(210, radius: 20)
             CGPathAddLineToPoint(trianglePath, nil, vertexTwo.x, vertexTwo.y)
 
-            let vertexThree = angleToPoint(240, radius: 20)
+            let vertexThree = angleToPoint(330, radius: 20)
             CGPathAddLineToPoint(trianglePath, nil, vertexThree.x, vertexThree.y)
             
             CGPathCloseSubpath(trianglePath)
