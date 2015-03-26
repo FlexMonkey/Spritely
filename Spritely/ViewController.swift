@@ -133,7 +133,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     
     func createBall(#position: CGPoint)
     {
-        newBallNode = ShapeNodeWithOrigin(circleOfRadius: 20)
+        creatingBox?.removeFromParent()
+        
+        newBallNode = ShapeNodeWithOrigin(rectOfSize: CGSize(width: 40, height: 40), cornerRadius: 10)
+        newBallNode?.alpha = 0.5
 
         newBallNode?.position = position
         newBallNode?.startingPostion = position
@@ -164,6 +167,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             newBallNode.physicsBody?.contactTestBitMask = 0b0001
             newBallNode.physicsBody?.collisionBitMask = 0b1000
             newBallNode.physicsBody?.categoryBitMask =  ballCategoryBitMask
+            
+            newBallNode.alpha = 1
             
             populateToolbar()
         }
@@ -304,6 +309,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 let boxRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
                 
                 creatingBox = createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                
+                creatingBox?.alpha = (boxWidth > minBoxLength / 2) ? 1.0 : 0.5
             }
             else
             {
@@ -317,7 +324,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                     let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
                     let boxRotation = creatingBox!.zRotation
                     
-                    createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                    if boxWidth > minBoxLength / 2
+                    {
+                        createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                    }
                 }
   
                 panGestureOrigin = nil
