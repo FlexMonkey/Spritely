@@ -21,8 +21,37 @@ extension CGPoint
     }
 }
 
+extension CGMutablePath
+{
+    class func equilateralTriangleOfRadius(radius: Float, angle: Float = 0) -> CGMutablePath
+    {
+        let trianglePath = CGPathCreateMutable()
+        
+        let vertexOne = Float(90 + angle).angleToPoint(radius: radius)
+        CGPathMoveToPoint(trianglePath, nil, vertexOne.x, vertexOne.y)
+        
+        let vertexTwo = Float(210 + angle).angleToPoint(radius: radius)
+        CGPathAddLineToPoint(trianglePath, nil, vertexTwo.x, vertexTwo.y)
+        
+        let vertexThree = Float(330 + angle).angleToPoint(radius: radius)
+        CGPathAddLineToPoint(trianglePath, nil, vertexThree.x, vertexThree.y)
+        
+        CGPathCloseSubpath(trianglePath)
+        
+        return trianglePath
+    }
+}
+
 extension Float
 {
+    func angleToPoint(#radius: Float) -> CGPoint
+    {
+        let xx = (sin(self.toRadians()) * radius)
+        let yy = (cos(self.toRadians()) * radius)
+        
+        return CGPoint(x: CGFloat(xx), y: CGFloat(yy))
+    }
+    
     func toRadians() -> Float
     {
         return self / Float(180.0 / M_PI)

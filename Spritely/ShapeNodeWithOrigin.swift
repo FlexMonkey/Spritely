@@ -21,44 +21,27 @@ class ShapeNodeWithOrigin: SKShapeNode
         {
             strokeColor = getColor()
             
-            assignPath()
+            path = getPath()
         }
     }
     
-    func assignPath()
+    func getPath() -> CGPath
     {
+        var returnPath: CGPath!
+        
         switch instrument
         {
-        case Instruments.mandolin:
-            path = CGPathCreateWithRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
+        case Instruments.vibes:
+            returnPath = CGPathCreateWithRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
             
         case Instruments.marimba:
-            path = CGPathCreateWithEllipseInRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
+            returnPath = CGPathCreateWithEllipseInRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
             
-        case Instruments.vibes:
-            let trianglePath = CGPathCreateMutable()
-            
-            let vertexOne = angleToPoint(90, radius: 20)
-            CGPathMoveToPoint(trianglePath, nil, vertexOne.x, vertexOne.y)
-            
-            let vertexTwo = angleToPoint(210, radius: 20)
-            CGPathAddLineToPoint(trianglePath, nil, vertexTwo.x, vertexTwo.y)
-
-            let vertexThree = angleToPoint(330, radius: 20)
-            CGPathAddLineToPoint(trianglePath, nil, vertexThree.x, vertexThree.y)
-            
-            CGPathCloseSubpath(trianglePath)
-            
-            path = trianglePath
+        case Instruments.mandolin:
+            returnPath = CGMutablePathRef.equilateralTriangleOfRadius(20)
         }
-    }
-    
-    func angleToPoint(angleInDegrees: Float, radius: Float) -> CGPoint
-    {
-        let xx = (sin(angleInDegrees.toRadians()) * radius)
-        let yy = (cos(angleInDegrees.toRadians()) * radius)
         
-        return CGPoint(x: CGFloat(xx), y: CGFloat(yy))
+        return returnPath
     }
     
     func getColor() -> UIColor
