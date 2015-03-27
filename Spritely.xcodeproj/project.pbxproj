@@ -14,9 +14,9 @@
 		3E39581F1AA8F2C5007925EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E39581D1AA8F2C5007925EA /* LaunchScreen.xib */; };
 		3E39582B1AA8F2C5007925EA /* SpritelyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */; };
 		3E3958361AAB0416007925EA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3958351AAB0416007925EA /* Extensions.swift */; };
-		3ECF4F3B1ABFF656002FB11E /* BallEditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */; };
+		3ECF4F3B1ABFF656002FB11E /* InstrumentsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECF4F3A1ABFF656002FB11E /* InstrumentsToolbar.swift */; };
 		3ECF4F3E1ABFF7B7002FB11E /* SpriteKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECF4F3D1ABFF7B7002FB11E /* SpriteKitHelper.swift */; };
-		BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */; };
+		BE7E54541AAACFB500DACDE6 /* BarShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54531AAACFB500DACDE6 /* BarShapeNode.swift */; };
 		BE7E55B91AAC3B1300DACDE6 /* AKEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E54591AAC3B1300DACDE6 /* AKEvent.m */; };
 		BE7E55BA1AAC3B1300DACDE6 /* AKInstrument.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E545C1AAC3B1300DACDE6 /* AKInstrument.m */; };
 		BE7E55BB1AAC3B1300DACDE6 /* AKManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E545E1AAC3B1300DACDE6 /* AKManager.m */; };
@@ -162,7 +162,7 @@
 		BE7E564A1AAC3B1300DACDE6 /* AKAudioAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B61AAC3B1300DACDE6 /* AKAudioAnalyzer.m */; };
 		BE7E564B1AAC3B1300DACDE6 /* LevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */; };
 		BE7E564F1AAC3BF900DACDE6 /* BarInstrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E564E1AAC3BF900DACDE6 /* BarInstrument.swift */; };
-		BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */; };
+		BE7E56511AAC841800DACDE6 /* InstrumentShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7E56501AAC841800DACDE6 /* InstrumentShapeNode.swift */; };
 		C43F47ED1AAD3B19005E437A /* Conductor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43F47EC1AAD3B19005E437A /* Conductor.swift */; };
 /* End PBXBuildFile section */
 
@@ -188,9 +188,9 @@
 		3E3958291AA8F2C5007925EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E39582A1AA8F2C5007925EA /* SpritelyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpritelyTests.swift; sourceTree = "<group>"; };
 		3E3958351AAB0416007925EA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallEditorToolbar.swift; sourceTree = "<group>"; };
+		3ECF4F3A1ABFF656002FB11E /* InstrumentsToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsToolbar.swift; sourceTree = "<group>"; };
 		3ECF4F3D1ABFF7B7002FB11E /* SpriteKitHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteKitHelper.swift; sourceTree = "<group>"; };
-		BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchEnabledShapeNode.swift; sourceTree = "<group>"; };
+		BE7E54531AAACFB500DACDE6 /* BarShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarShapeNode.swift; sourceTree = "<group>"; };
 		BE7E54581AAC3B1300DACDE6 /* AKEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKEvent.h; sourceTree = "<group>"; };
 		BE7E54591AAC3B1300DACDE6 /* AKEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKEvent.m; sourceTree = "<group>"; };
 		BE7E545A1AAC3B1300DACDE6 /* AKFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKFoundation.h; sourceTree = "<group>"; };
@@ -501,7 +501,7 @@
 		BE7E55B81AAC3B1300DACDE6 /* LevelMeter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LevelMeter.m; sourceTree = "<group>"; };
 		BE7E564C1AAC3B5F00DACDE6 /* Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		BE7E564E1AAC3BF900DACDE6 /* BarInstrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarInstrument.swift; sourceTree = "<group>"; };
-		BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeNodeWithOrigin.swift; sourceTree = "<group>"; };
+		BE7E56501AAC841800DACDE6 /* InstrumentShapeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentShapeNode.swift; sourceTree = "<group>"; };
 		C43F47EC1AAD3B19005E437A /* Conductor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conductor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -606,9 +606,9 @@
 		BE7E54521AAACF3F00DACDE6 /* components */ = {
 			isa = PBXGroup;
 			children = (
-				BE7E54531AAACFB500DACDE6 /* TouchEnabledShapeNode.swift */,
-				BE7E56501AAC841800DACDE6 /* ShapeNodeWithOrigin.swift */,
-				3ECF4F3A1ABFF656002FB11E /* BallEditorToolbar.swift */,
+				BE7E54531AAACFB500DACDE6 /* BarShapeNode.swift */,
+				BE7E56501AAC841800DACDE6 /* InstrumentShapeNode.swift */,
+				3ECF4F3A1ABFF656002FB11E /* InstrumentsToolbar.swift */,
 			);
 			name = components;
 			sourceTree = "<group>";
@@ -1364,7 +1364,7 @@
 				BE7E562A1AAC3B1300DACDE6 /* AKDCBlock.m in Sources */,
 				BE7E56381AAC3B1300DACDE6 /* AKHighPassButterworthFilter.m in Sources */,
 				BE7E56271AAC3B1300DACDE6 /* AKDopplerEffect.m in Sources */,
-				BE7E54541AAACFB500DACDE6 /* TouchEnabledShapeNode.swift in Sources */,
+				BE7E54541AAACFB500DACDE6 /* BarShapeNode.swift in Sources */,
 				3ECF4F3E1ABFF7B7002FB11E /* SpriteKitHelper.swift in Sources */,
 				BE7E55C41AAC3B1300DACDE6 /* CsoundObj.m in Sources */,
 				BE7E55E51AAC3B1300DACDE6 /* AKLineSegments.m in Sources */,
@@ -1427,7 +1427,7 @@
 				BE7E56021AAC3B1300DACDE6 /* AKMandolin.m in Sources */,
 				BE7E56141AAC3B1300DACDE6 /* AKSimpleWaveGuideModel.m in Sources */,
 				BE7E56311AAC3B1300DACDE6 /* AKMoogLadder.m in Sources */,
-				3ECF4F3B1ABFF656002FB11E /* BallEditorToolbar.swift in Sources */,
+				3ECF4F3B1ABFF656002FB11E /* InstrumentsToolbar.swift in Sources */,
 				BE7E55CF1AAC3B1300DACDE6 /* AudioKit.swift in Sources */,
 				BE7E55D11AAC3B1300DACDE6 /* AKTrackedAmplitude.m in Sources */,
 				BE7E55E61AAC3B1300DACDE6 /* AKRandomDistributionTable.m in Sources */,
@@ -1470,7 +1470,7 @@
 				BE7E56111AAC3B1300DACDE6 /* AKBeatenPlate.m in Sources */,
 				BE7E560D1AAC3B1300DACDE6 /* AKSekere.m in Sources */,
 				BE7E56361AAC3B1300DACDE6 /* AKBandPassButterworthFilter.m in Sources */,
-				BE7E56511AAC841800DACDE6 /* ShapeNodeWithOrigin.swift in Sources */,
+				BE7E56511AAC841800DACDE6 /* InstrumentShapeNode.swift in Sources */,
 				BE7E560A1AAC3B1300DACDE6 /* AKDroplet.m in Sources */,
 				BE7E55E21AAC3B1300DACDE6 /* AKArrayTable.m in Sources */,
 				BE7E56431AAC3B1300DACDE6 /* AKConstant.m in Sources */,

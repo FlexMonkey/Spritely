@@ -72,7 +72,8 @@ class MandolinInstrument: AKInstrument
     }
 }
 
-class BarNote: AKNote {
+class BarNote: AKNote
+{
     var frequency = AKNoteProperty(value: 0,    minimum: 0, maximum: 1000)
     var amplitude = AKNoteProperty(value: 0.04, minimum: 0, maximum: 0.25)
     

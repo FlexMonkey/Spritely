@@ -8,12 +8,13 @@
 import UIKit
 import SpriteKit
 
-class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledShapeNodeDelegate, UIGestureRecognizerDelegate, BallEditorToolbarDelegate
+class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDelegate, UIGestureRecognizerDelegate, InstrumentsToolbarDelegate
 {
     let frequencies: [Float] = [130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998, 207.652, 220, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440.000, 466.164, 493.883, 523.251, 554.365, 587.330, 622.254, 659.255, 698.456, 739.989, 783.991, 830.609, 880, 932.328, 987.767 ].sorted({$0 > $1})
     
-    let minBoxLength: CGFloat = 100
-    let maxBoxLength: CGFloat = 700
+    let minBarLength: CGFloat = 100
+    let maxBarLength: CGFloat = 700
+    let barHeight = CGFloat(30)
     
     let skView = SKView()
     var scene = SKScene()
@@ -22,17 +23,17 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     var rotateGestureAngleOrigin: CGFloat?
  
     let floorCategoryBitMask: UInt32 = 0b000001
-    let ballCategoryBitMask: UInt32 = 0xb10001
-    let boxCategoryBitMask: UInt32 = 0b001111
+    let instrumentCategoryBitMask: UInt32 = 0xb10001
+    let barCategoryBitMask: UInt32 = 0b001111
     
-    let boxHeight = CGFloat(30)
-
     let longPressGestureRecogniser: UILongPressGestureRecognizer!
     let conductor = Conductor()
     
     let newInstrumentAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
     
-    let ballEditorToolbar = BallEditorToolbar(frame: CGRectZero)
+    let instrumentsToolbar = InstrumentsToolbar(frame: CGRectZero)
+    var newInstrumentShapeNode: InstrumentShapeNode?
+    var transientCreatingBar: BarShapeNode?
     
     override init()
     {
@@ -66,7 +67,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         newInstrumentAlertController.addAction(cancelAction)
     }
     
-    var selectedBox: TouchEnabledShapeNode?
+    var selectedBar: BarShapeNode?
     {
         didSet
         {
@@ -75,7 +76,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 previousSelection.selected = false
             }
             
-            if let newSelection = selectedBox
+            if let newSelection = selectedBar
             {
                 newSelection.selected = true
                 
@@ -111,30 +112,28 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         
         SpriteKitHelper.createWalls(view: view, scene: scene, floorCategoryBitMask: floorCategoryBitMask)
         
-        createBox(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
+        createBarShapeNode(position: CGPoint(x: view.frame.width / 2 - 20, y: 100), rotation: 100, width: 100)
         //createBall(position: CGPoint(x: view.frame.width / 2, y: view.frame.height))
 
         scene.physicsWorld.contactDelegate = self
         
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: -2)
         
-        ballEditorToolbar.delegate = self
-        view.addSubview(ballEditorToolbar)
+        instrumentsToolbar.delegate = self
+        view.addSubview(instrumentsToolbar)
     }
     
-    var newBallNode: ShapeNodeWithOrigin?
-    
-    func createBall(#position: CGPoint)
+    func createInstrumentShapeNode(#position: CGPoint)
     {
-        creatingBox?.removeFromParent()
+        transientCreatingBar?.removeFromParent()
         
-        newBallNode = ShapeNodeWithOrigin(rectOfSize: CGSize(width: 40, height: 40), cornerRadius: 10)
-        newBallNode?.alpha = 0.5
+        newInstrumentShapeNode = InstrumentShapeNode(rectOfSize: CGSize(width: 40, height: 40), cornerRadius: 10)
+        newInstrumentShapeNode?.alpha = 0.5
 
-        newBallNode?.position = position
-        newBallNode?.startingPostion = position
+        newInstrumentShapeNode?.position = position
+        newInstrumentShapeNode?.startingPostion = position
         
-        scene.addChild(newBallNode!)
+        scene.addChild(newInstrumentShapeNode!)
         
         let newInstrumentAlertPosition = CGPoint(x: position.x - 20, y: view.frame.height - position.y - 20)
         
@@ -147,103 +146,101 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     
     func assignInstrumentToBall(value : UIAlertAction!) -> Void
     {
-        if let newBallNode = newBallNode
+        if let newInstrumentShapeNode = newInstrumentShapeNode
         {
-            newBallNode.instrument = Instruments(rawValue: value.title) ?? Instruments.mandolin
+            newInstrumentShapeNode.instrument = Instruments(rawValue: value.title) ?? Instruments.mandolin
             
             // TODO: move this stuff into instument code :)
             
-            let nodePhysicsBody = SKPhysicsBody(polygonFromPath: newBallNode.path)
+            let nodePhysicsBody = SKPhysicsBody(polygonFromPath: newInstrumentShapeNode.path)
             
-            newBallNode.physicsBody = nodePhysicsBody
+            newInstrumentShapeNode.physicsBody = nodePhysicsBody
             
-            newBallNode.physicsBody?.contactTestBitMask = 0b0001
-            newBallNode.physicsBody?.collisionBitMask = 0b1000
-            newBallNode.physicsBody?.categoryBitMask =  ballCategoryBitMask
+            newInstrumentShapeNode.physicsBody?.contactTestBitMask = 0b0001
+            newInstrumentShapeNode.physicsBody?.collisionBitMask = 0b1000
+            newInstrumentShapeNode.physicsBody?.categoryBitMask =  instrumentCategoryBitMask
             
-            newBallNode.alpha = 1
+            newInstrumentShapeNode.alpha = 1
             
             populateToolbar()
         }
     }
     
-    func instrumentBallDeleted(instrumentId id: String)
+    func instrumentShapeNodeDeleted(instrumentId id: String)
     {
-        if let ball = getInstrumentBallById(id)
+        if let instrumentShapeNode = getInstrumentShapeNodeById(id)
         {
-            ball.animatedRemoveFromParent()
+            instrumentShapeNode.animatedRemoveFromParent()
         }
     }
     
-    func instrumentBallMoved(instrumentId id: String, newX: CGFloat)
+    func instrumentShapeNodeMoved(instrumentId id: String, newX: CGFloat)
     {
-        if let ball = getInstrumentBallById(id)
+        if let instrumentShapeNode = getInstrumentShapeNodeById(id)
         {
-            ball.startingPostion?.x = newX // add starting position invalid flag to grey out during this run
+            instrumentShapeNode.startingPostion?.x = newX // add starting position invalid flag to grey out during this run
         }
     }
     
-    func getInstrumentBallById(id: String) -> ShapeNodeWithOrigin?
+    func getInstrumentShapeNodeById(id: String) -> InstrumentShapeNode?
     {
-        return scene.children.filter({ $0 is ShapeNodeWithOrigin && ($0 as ShapeNodeWithOrigin).id == id })[0] as? ShapeNodeWithOrigin
+        return scene.children.filter({ $0 is InstrumentShapeNode && ($0 as InstrumentShapeNode).id == id })[0] as? InstrumentShapeNode
     }
     
     func populateToolbar()
     {
-        ballEditorToolbar.ballsArray = scene.children.filter({ $0 is ShapeNodeWithOrigin }) as [ShapeNodeWithOrigin]
+        instrumentsToolbar.instrumentShapeNodes = scene.children.filter({ $0 is InstrumentShapeNode }) as [InstrumentShapeNode]
     }
     
     func cancelBallCreation(value : UIAlertAction!) -> Void
     {
-        newBallNode?.removeFromParent()
-        newBallNode = nil
+        newInstrumentShapeNode?.removeFromParent()
+        newInstrumentShapeNode = nil
     }
     
 
-    func createBox(#position: CGPoint, rotation: CGFloat, width: CGFloat) -> TouchEnabledShapeNode
+    func createBarShapeNode(#position: CGPoint, rotation: CGFloat, width: CGFloat) -> BarShapeNode
     {
-        let actualWidth = max(min(width, maxBoxLength), minBoxLength)
+        let actualWidth = max(min(width, maxBarLength), minBarLength)
         
-        let box = TouchEnabledShapeNode(rectOfSize: CGSize(width: actualWidth, height: boxHeight))
-        box.position = position
-        box.zRotation = rotation
-        box.physicsBody = SKPhysicsBody(polygonFromPath: box.path)
-        box.physicsBody?.dynamic = false
-        box.physicsBody?.restitution = 0.5
-        box.delegate = self
+        let barShapeNode = BarShapeNode(rectOfSize: CGSize(width: actualWidth, height: barHeight))
+        barShapeNode.position = position
+        barShapeNode.zRotation = rotation
+        barShapeNode.physicsBody = SKPhysicsBody(polygonFromPath: barShapeNode.path)
+        barShapeNode.physicsBody?.dynamic = false
+        barShapeNode.physicsBody?.restitution = 0.5
+        barShapeNode.delegate = self
         
-        let frequencyIndex = Int(round((actualWidth - minBoxLength) / (maxBoxLength - minBoxLength) * CGFloat(frequencies.count - 1)))
+        let frequencyIndex = Int(round((actualWidth - minBarLength) / (maxBarLength - minBarLength) * CGFloat(frequencies.count - 1)))
 
-        box.frequency = frequencies[frequencyIndex]
+        barShapeNode.frequency = frequencies[frequencyIndex]
         
-        box.physicsBody?.contactTestBitMask = 0b0010
-        box.physicsBody?.collisionBitMask = 0b1111
-        box.physicsBody?.categoryBitMask = boxCategoryBitMask
+        barShapeNode.physicsBody?.contactTestBitMask = 0b0010
+        barShapeNode.physicsBody?.collisionBitMask = 0b1111
+        barShapeNode.physicsBody?.categoryBitMask = barCategoryBitMask
         
-        scene.addChild(box)
+        scene.addChild(barShapeNode)
         
-        return box
+        return barShapeNode
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool
     {
         return true
     }
-
-    var creatingBox: TouchEnabledShapeNode?
     
     func longPressHandler(recogniser: UILongPressGestureRecognizer)
     {
-        // create a new ball on long press...
+        // create a new instrument on long press...
   
-        if selectedBox == nil
+        if selectedBar == nil
         {
             if recogniser.state == UIGestureRecognizerState.Began
             {
                 let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
                     y: view.frame.height - recogniser.locationInView(view).y)
                 
-                createBall(position: invertedLocationInView)
+                createInstrumentShapeNode(position: invertedLocationInView)
             }
         }
     }
@@ -252,7 +249,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
     {
         // if there's no box selected, start drawing one, otherwise move selected box....
         
-        if let selectedBox = selectedBox
+        if let selectedBar = selectedBar
         {
             let currentGestureLocation = recogniser.locationInView(view)
             
@@ -262,10 +259,10 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
-                selectedBox.position.x += currentGestureLocation.x - panGestureOrigin!.x
-                selectedBox.position.y -= currentGestureLocation.y - panGestureOrigin!.y
+                selectedBar.position.x += currentGestureLocation.x - panGestureOrigin!.x
+                selectedBar.position.y -= currentGestureLocation.y - panGestureOrigin!.y
                 
-                selectedBox.alpha = (currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50) ? 0.25 : 1
+                selectedBar.alpha = (currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50) ? 0.25 : 1
                 
                 panGestureOrigin = recogniser.locationInView(view)
             }
@@ -273,12 +270,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             {
                 if currentGestureLocation.x < 50 || currentGestureLocation.x > view.frame.width - 50
                 {
-                    selectedBox.animatedRemoveFromParent()
+                    selectedBar.animatedRemoveFromParent()
                 }
                 
                 rotateGestureAngleOrigin = nil
                 panGestureOrigin = nil
-                unselectBox()
+                unselectBar()
             }
         }
         else
@@ -288,11 +285,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 panGestureOrigin = CGPoint(x: recogniser.locationInView(view).x,
                     y: view.frame.height - recogniser.locationInView(view).y)
                 
-                creatingBox = createBox(position: panGestureOrigin!, rotation: 0, width: boxHeight)
+                transientCreatingBar = createBarShapeNode(position: panGestureOrigin!, rotation: 0, width: barHeight)
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
-                creatingBox!.removeFromParent()
+                transientCreatingBar!.removeFromParent()
                 
                 let invertedLocationInView = CGPoint(x: recogniser.locationInView(view).x,
                     y: view.frame.height - recogniser.locationInView(view).y)
@@ -301,13 +298,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                 
                 let boxRotation = atan2(panGestureOrigin!.x - invertedLocationInView.x, invertedLocationInView.y - panGestureOrigin!.y) + CGFloat(M_PI / 2)
                 
-                creatingBox = createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                transientCreatingBar = createBarShapeNode(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
                 
-                creatingBox?.alpha = (boxWidth > minBoxLength / 2) ? 1.0 : 0.5
+                transientCreatingBar?.alpha = (boxWidth > minBarLength / 2) ? 1.0 : 0.5
             }
             else
             {
-                creatingBox?.removeFromParent()
+                transientCreatingBar?.removeFromParent()
                 
                 if panGestureOrigin != nil
                 {
@@ -315,11 +312,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
                         y: view.frame.height - recogniser.locationInView(view).y)
                     
                     let boxWidth = CGFloat(panGestureOrigin!.distance(invertedLocationInView)) * 2
-                    let boxRotation = creatingBox!.zRotation
+                    let boxRotation = transientCreatingBar!.zRotation
                     
-                    if boxWidth > minBoxLength / 2
+                    if boxWidth > minBarLength / 2
                     {
-                        createBox(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
+                        createBarShapeNode(position: panGestureOrigin!, rotation: boxRotation, width: boxWidth)
                     }
                 }
   
@@ -329,14 +326,14 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         }
     }
 
-    func unselectBox()
+    func unselectBar()
     {
-        selectedBox = nil
+        selectedBar = nil
     }
     
     func rotateHandler(recogniser: UIRotationGestureRecognizer)
     {
-        if selectedBox != nil
+        if selectedBar != nil
         {
             if recogniser.state == UIGestureRecognizerState.Began
             {
@@ -344,7 +341,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             }
             else if recogniser.state == UIGestureRecognizerState.Changed
             {
-                selectedBox?.zRotation += rotateGestureAngleOrigin! - recogniser.rotation
+                selectedBar?.zRotation += rotateGestureAngleOrigin! - recogniser.rotation
                 
                 rotateGestureAngleOrigin = recogniser.rotation
             }
@@ -352,18 +349,18 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
             {
                 rotateGestureAngleOrigin = nil
                 panGestureOrigin = nil
-                selectedBox = nil
+                selectedBar = nil
             }
         }
     }
 
     
     
-    func touchEnabledShapeNodeSelected(touchEnabledShapeNode: TouchEnabledShapeNode?)
+    func barShapeNodeSelected(barShapeNode: BarShapeNode?)
     {
         if panGestureOrigin == nil && rotateGestureAngleOrigin == nil
         {
-            selectedBox = touchEnabledShapeNode
+            selectedBar = barShapeNode
         }
     }
 
@@ -373,41 +370,41 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
    
         // play a tone based on velocity (amplitude) and are (frequency) if either body is a box...
         
-        var box: TouchEnabledShapeNode?
-        var ball: ShapeNodeWithOrigin?
+        var barShapeNode: BarShapeNode?
+        var instrumentShapeNode: InstrumentShapeNode?
         
-        if contact.bodyA.categoryBitMask == boxCategoryBitMask
+        if contact.bodyA.categoryBitMask == barCategoryBitMask
         {
-            box = (contact.bodyA.node as? TouchEnabledShapeNode)
-            ball = (contact.bodyB.node as? ShapeNodeWithOrigin)
+            barShapeNode = (contact.bodyA.node as? BarShapeNode)
+            instrumentShapeNode = (contact.bodyB.node as? InstrumentShapeNode)
         }
-        else if contact.bodyB.categoryBitMask == boxCategoryBitMask
+        else if contact.bodyB.categoryBitMask == barCategoryBitMask
         {
-            box = (contact.bodyB.node as? TouchEnabledShapeNode)
-            ball = (contact.bodyA.node as? ShapeNodeWithOrigin)
+            barShapeNode = (contact.bodyB.node as? BarShapeNode)
+            instrumentShapeNode = (contact.bodyA.node as? InstrumentShapeNode)
         }
         
-        if let box = box
+        if let barShapeNode = barShapeNode
         {
-            if let ball = ball
+            if let instrumentShapeNode = instrumentShapeNode
             {
-                let ballPhysicsBody = ball.physicsBody!
+                let instrumentPhysicsBody = instrumentShapeNode.physicsBody!
                 
-                let amplitude = Float(sqrt((ballPhysicsBody.velocity.dx * ballPhysicsBody.velocity.dx) + (ballPhysicsBody.velocity.dy * ballPhysicsBody.velocity.dy)) / 1500)
+                let amplitude = Float(sqrt((instrumentPhysicsBody.velocity.dx * instrumentPhysicsBody.velocity.dx) + (instrumentPhysicsBody.velocity.dy * instrumentPhysicsBody.velocity.dy)) / 1500)
                 
-                conductor.play(frequency: box.frequency, amplitude: amplitude, instrument: ball.instrument)
+                conductor.play(frequency: barShapeNode.frequency, amplitude: amplitude, instrument: instrumentShapeNode.instrument)
                 
-                box.pulse(strokeColor: ball.getColor())
+                barShapeNode.pulse(strokeColor: instrumentShapeNode.getColor())
             }
         }
         
         // wrap around body if other body is floor....
         
-        if contact.bodyA.categoryBitMask & ballCategoryBitMask == ballCategoryBitMask && contact.bodyB.categoryBitMask == floorCategoryBitMask
+        if contact.bodyA.categoryBitMask & instrumentCategoryBitMask == instrumentCategoryBitMask && contact.bodyB.categoryBitMask == floorCategoryBitMask
         {
             physicsBodyToReposition = contact.bodyA
         }
-        else if contact.bodyB.categoryBitMask & ballCategoryBitMask == ballCategoryBitMask && contact.bodyA.categoryBitMask == floorCategoryBitMask
+        else if contact.bodyB.categoryBitMask & instrumentCategoryBitMask == instrumentCategoryBitMask && contact.bodyA.categoryBitMask == floorCategoryBitMask
         {
             physicsBodyToReposition = contact.bodyB
         }
@@ -415,7 +412,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         if let physicsBodyToReposition = physicsBodyToReposition
         {
             let nodeToReposition = physicsBodyToReposition.node
-            let nodeX: CGFloat = (nodeToReposition as? ShapeNodeWithOrigin)?.startingPostion?.x ?? 0
+            let nodeX: CGFloat = (nodeToReposition as? InstrumentShapeNode)?.startingPostion?.x ?? 0
             
             nodeToReposition?.physicsBody = nil
             nodeToReposition?.position = CGPoint(x: nodeX, y: view.frame.height)
@@ -439,7 +436,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, TouchEnabledSh
         skView.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
         scene.size = CGSize(width: view.frame.width, height: sceneHeight)
         
-        ballEditorToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: toolbarHeight)
+        instrumentsToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: toolbarHeight)
     }
 
 

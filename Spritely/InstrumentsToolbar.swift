@@ -1,5 +1,5 @@
 //
-//  BallEditorToolbar.swift
+//  InstrumentsToolbar.swift (was BallEditorToolbar.swift)
 //  Spritely
 //
 //  Created by Simon Gladman on 23/03/2015.
@@ -8,11 +8,11 @@
 
 import SpriteKit
 
-class BallEditorToolbar: SKView
+class InstrumentsToolbar: SKView
 {
-    var delegate:BallEditorToolbarDelegate?
+    var delegate:InstrumentsToolbarDelegate?
     
-    var selectedInstrument: ShapeNodeWithOrigin?
+    var selectedInstrumentShapeNode: InstrumentShapeNode?
     {
         didSet
         {
@@ -21,9 +21,9 @@ class BallEditorToolbar: SKView
                 oldValue.fillColor = UIColor.clearColor()
             }
             
-            if let selectedInstrument = selectedInstrument
+            if let selectedInstrumentShapeNode = selectedInstrumentShapeNode
             {
-                selectedInstrument.fillColor = selectedInstrument.strokeColor
+                selectedInstrumentShapeNode.fillColor = selectedInstrumentShapeNode.strokeColor
             }
         }
     }
@@ -33,21 +33,21 @@ class BallEditorToolbar: SKView
         presentScene(SKScene())
     }
     
-    var ballsArray: [ShapeNodeWithOrigin] = [ShapeNodeWithOrigin]()
+    var instrumentShapeNodes: [InstrumentShapeNode] = [InstrumentShapeNode]()
     {
         didSet
         {
             scene?.removeAllChildren()
             
-            for ball in ballsArray
+            for instrumentShape in instrumentShapeNodes
             {
-                let newBall = ShapeNodeWithOrigin(path: ball.path)
-                newBall.id = ball.id
-                newBall.strokeColor = ball.strokeColor
+                let newInstrumentShape = InstrumentShapeNode(path: instrumentShape.path)
+                newInstrumentShape.id = instrumentShape.id
+                newInstrumentShape.strokeColor = instrumentShape.strokeColor
                 
-                newBall.position = CGPoint(x: ball.startingPostion!.x, y: frame.height / 2 )
+                newInstrumentShape.position = CGPoint(x: instrumentShape.startingPostion!.x, y: frame.height / 2 )
                 
-                scene?.addChild(newBall)
+                scene?.addChild(newInstrumentShape)
             }
         }
     }
@@ -66,17 +66,17 @@ class BallEditorToolbar: SKView
     {
         let locationInView = touches.anyObject()?.locationInView(self)
         
-        if let selectedInstrument = selectedInstrument
+        if let selectedInstrumentShapeNode = selectedInstrumentShapeNode
         {
             if let touchX = locationInView?.x
             {
-                selectedInstrument.position.x = touchX
+                selectedInstrumentShapeNode.position.x = touchX
                 
-                selectedInstrument.alpha = (touchX < 50 || touchX > frame.width - 50) ? 0.25 : 1
+                selectedInstrumentShapeNode.alpha = (touchX < 50 || touchX > frame.width - 50) ? 0.25 : 1
                 
                 if let delegate = delegate
                 {
-                    delegate.instrumentBallMoved(instrumentId: selectedInstrument.id, newX: touchX)
+                    delegate.instrumentShapeNodeMoved(instrumentId: selectedInstrumentShapeNode.id, newX: touchX)
                 }
             }
             
@@ -85,7 +85,7 @@ class BallEditorToolbar: SKView
     
     override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!)
     {
-         selectedInstrument = nil
+         selectedInstrumentShapeNode = nil
     }
     
     override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
@@ -96,28 +96,28 @@ class BallEditorToolbar: SKView
         {
             if let delegate = delegate
             {
-                delegate.instrumentBallDeleted(instrumentId: selectedInstrument!.id)
+                delegate.instrumentShapeNodeDeleted(instrumentId: selectedInstrumentShapeNode!.id)
             }
             
-            selectedInstrument?.animatedRemoveFromParent()
+            selectedInstrumentShapeNode?.animatedRemoveFromParent()
         }
         
-         selectedInstrument = nil
+         selectedInstrumentShapeNode = nil
     }
     
 
     
     func selectInstrumentAtLocation(touchX: CGFloat)
     {
-        selectedInstrument = nil
+        selectedInstrumentShapeNode = nil
         
-        let children = scene?.children.filter({ $0 is ShapeNodeWithOrigin }) as [ShapeNodeWithOrigin]
+        let children = scene?.children.filter({ $0 is InstrumentShapeNode }) as [InstrumentShapeNode]
         
         for node in children
         {
             if abs(node.position.x - touchX) < 20
             {
-                selectedInstrument = (node as ShapeNodeWithOrigin)
+                selectedInstrumentShapeNode = (node as InstrumentShapeNode)
                 
                 break
             }
@@ -134,10 +134,10 @@ class BallEditorToolbar: SKView
     }
 }
 
-protocol BallEditorToolbarDelegate
+protocol InstrumentsToolbarDelegate
 {
-    func instrumentBallMoved(#instrumentId: String, newX: CGFloat)
+    func instrumentShapeNodeMoved(#instrumentId: String, newX: CGFloat)
     
-    func instrumentBallDeleted(#instrumentId: String)
+    func instrumentShapeNodeDeleted(#instrumentId: String)
 }
 

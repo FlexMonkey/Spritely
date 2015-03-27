@@ -1,5 +1,5 @@
 //
-//  TouchEnabledShapeNode.swift
+//  BarShapeNode.swift (was TouchEnabledShapeNode.swift)
 //  Spritely
 //
 //  Created by Simon Gladman on 07/03/2015.
@@ -8,9 +8,9 @@
 
 import SpriteKit
 
-class TouchEnabledShapeNode: SKShapeNode
+class BarShapeNode: SKShapeNode
 {
-    var delegate: TouchEnabledShapeNodeDelegate?
+    var delegate: BarShapeNodeDelegate?
     private let label = SKLabelNode()
     
     override init()
@@ -51,7 +51,7 @@ class TouchEnabledShapeNode: SKShapeNode
     {
         if let delegate = delegate
         {
-            delegate.touchEnabledShapeNodeSelected(self)
+            delegate.barShapeNodeSelected(self)
         }
     }
     
@@ -59,7 +59,7 @@ class TouchEnabledShapeNode: SKShapeNode
     {
         if let delegate = delegate
         {
-            delegate.touchEnabledShapeNodeSelected(nil)
+            delegate.barShapeNodeSelected(nil)
         }
     }
     
@@ -67,7 +67,7 @@ class TouchEnabledShapeNode: SKShapeNode
     {
         if let delegate = delegate
         {
-            delegate.touchEnabledShapeNodeSelected(nil)
+            delegate.barShapeNodeSelected(nil)
         }
     }
 
@@ -99,7 +99,7 @@ class TouchEnabledShapeNode: SKShapeNode
 }
 
 
-protocol TouchEnabledShapeNodeDelegate
+protocol BarShapeNodeDelegate
 {
-    func touchEnabledShapeNodeSelected(touchEnabledShapeNode: TouchEnabledShapeNode?)
+    func barShapeNodeSelected(barShapeNode: BarShapeNode?)
 }

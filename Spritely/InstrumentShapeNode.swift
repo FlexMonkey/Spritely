@@ -1,5 +1,5 @@
 //
-//  ShapeNodeWithOrigin.swift
+//  InstrumentShapeNode.swift (was ShapeNodeWithOrigin.swift
 //  Spritely
 //
 //  Created by Simon Gladman on 08/03/2015.
@@ -9,7 +9,7 @@
 import Foundation
 import SpriteKit
 
-class ShapeNodeWithOrigin: SKShapeNode
+class InstrumentShapeNode: SKShapeNode
 {
     var id = NSUUID().UUIDString
     
