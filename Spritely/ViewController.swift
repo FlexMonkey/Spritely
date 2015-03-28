@@ -36,6 +36,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     var transientCreatingBar: BarShapeNode?
     
     let rollingWaveformPlot = AKAudioOutputRollingWaveformPlot()
+    let blurOverlay = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     
     override init()
     {
@@ -97,6 +98,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
         
         AKManager.addBinding(rollingWaveformPlot)
         view.addSubview(rollingWaveformPlot)
+        
+        view.addSubview(blurOverlay)
 
         skView.addGestureRecognizer(longPressGestureRecogniser)
         
@@ -109,8 +112,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
         rotateGestureRecogniser.delegate = self
         skView.addGestureRecognizer(rotateGestureRecogniser)
 
-        skView.alpha = 0.95
+        skView.allowsTransparency = true
+        skView.backgroundColor = UIColor.clearColor()
         view.addSubview(skView)
+        
+        scene.backgroundColor = UIColor.clearColor()
 
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .ResizeFill
@@ -443,6 +449,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
         scene.size = CGSize(width: view.frame.width, height: sceneHeight)
 
         rollingWaveformPlot.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
+        blurOverlay.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
         
         instrumentsToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: toolbarHeight)
     }
