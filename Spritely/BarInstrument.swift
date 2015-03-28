@@ -27,7 +27,6 @@ class MarimbaInstrument: AKInstrument
         instrument.vibratoFrequency = 2.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
-        connect(instrument)
         
         connect(AKAudioOutput(audioSource: instrument))
     }
@@ -49,7 +48,6 @@ class VibesInstrument: AKInstrument
         instrument.tremoloFrequency = 1.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
-        connect(instrument)
         
         connect(AKAudioOutput(audioSource: instrument))
     }
@@ -71,7 +69,6 @@ class MandolinInstrument: AKInstrument
         instrument.loopGain = 0.994.ak
         instrument.frequency = note.frequency
         instrument.amplitude = note.amplitude
-        connect(instrument)
         
         connect(AKAudioOutput(audioSource: instrument))
     }
