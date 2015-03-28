@@ -21,29 +21,32 @@
     AKConstant *idecim;
 }
 
-- (instancetype)initWithFunctionTable:(AKControl *)functionTable
-                                time:(AKAudio *)time
-                         scaledPitch:(AKControl *)scaledPitch
-                           amplitude:(AKControl *)amplitude
+- (instancetype)initWithTable:(AKControl *)table
+                         time:(AKAudio *)time
+                  scaledPitch:(AKControl *)scaledPitch
+                    amplitude:(AKControl *)amplitude
 {
     self = [super initWithString:[self operationName]];
     if (self) {
-        ktab = functionTable;
+        ktab = table;
         atimpt = time;
         kpitch = scaledPitch;
         kamp = amplitude;
         ifftsize = akp(2048);
         idecim = akp(4);
+        self.state = @"connectable";
+        self.dependencies = @[ktab, atimpt, kpitch, kamp];
+        
     }
     return self;
 }
 
 - (void)setOptionalSizeOfFFT:(AKConstant *)sizeOfFFT {
-	ifftsize = sizeOfFFT;
+    ifftsize = sizeOfFFT;
 }
 
 - (void)setOptionalDecimation:(AKConstant *)decimation {
-	idecim = decimation;
+    idecim = decimation;
 }
 
 - (NSString *)stringForCSD {

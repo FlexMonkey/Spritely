@@ -2,7 +2,7 @@
 //  AKDecimator.m
 //  AudioKit
 //
-//  Auto-generated on 2/2/15.
+//  Auto-generated on 2/18/15.
 //  Copyright (c) 2015 Aurelius Prochazka. All rights reserved.
 //
 //  Implementation of Csound's decimator:
@@ -26,7 +26,8 @@
         _input = input;
         _bitDepth = bitDepth;
         _sampleRate = sampleRate;
-    }
+        [self setUpConnections];
+}
     return self;
 }
 
@@ -38,6 +39,7 @@
         // Default Values
         _bitDepth = akp(24);
         _sampleRate = akp(44100);
+        [self setUpConnections];
     }
     return self;
 }
@@ -47,37 +49,76 @@
     return [[AKDecimator alloc] initWithInput:input];
 }
 
-- (void)setOptionalBitDepth:(AKParameter *)bitDepth {
+- (void)setBitDepth:(AKParameter *)bitDepth {
     _bitDepth = bitDepth;
-}
-- (void)setOptionalSampleRate:(AKParameter *)sampleRate {
-    _sampleRate = sampleRate;
+    [self setUpConnections];
 }
 
-- (NSString *)stringForCSD {
+- (void)setOptionalBitDepth:(AKParameter *)bitDepth {
+    [self setBitDepth:bitDepth];
+}
+
+- (void)setSampleRate:(AKParameter *)sampleRate {
+    _sampleRate = sampleRate;
+    [self setUpConnections];
+}
+
+- (void)setOptionalSampleRate:(AKParameter *)sampleRate {
+    [self setSampleRate:sampleRate];
+}
+
+
+- (void)setUpConnections
+{
+    self.state = @"connectable";
+    self.dependencies = @[_input, _bitDepth, _sampleRate];
+}
+
+- (NSString *)inlineStringForCSD
+{
+    NSMutableString *inlineCSDString = [[NSMutableString alloc] init];
+
+    [inlineCSDString appendString:@"decimator("];
+    [inlineCSDString appendString:[self inputsString]];
+    [inlineCSDString appendString:@")"];
+
+    return inlineCSDString;
+}
+
+
+- (NSString *)stringForCSD
+{
     NSMutableString *csdString = [[NSMutableString alloc] init];
 
     [csdString appendFormat:@"%@ decimator ", self];
+    [csdString appendString:[self inputsString]];
+    return csdString;
+}
 
+- (NSString *)inputsString {
+    NSMutableString *inputsString = [[NSMutableString alloc] init];
+
+    
     if ([_input class] == [AKAudio class]) {
-        [csdString appendFormat:@"%@, ", _input];
+        [inputsString appendFormat:@"%@, ", _input];
     } else {
-        [csdString appendFormat:@"AKAudio(%@), ", _input];
+        [inputsString appendFormat:@"AKAudio(%@), ", _input];
     }
 
     if ([_bitDepth class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _bitDepth];
+        [inputsString appendFormat:@"%@, ", _bitDepth];
     } else {
-        [csdString appendFormat:@"AKControl(%@), ", _bitDepth];
+        [inputsString appendFormat:@"AKControl(%@), ", _bitDepth];
     }
 
     if ([_sampleRate class] == [AKControl class]) {
-        [csdString appendFormat:@"%@", _sampleRate];
+        [inputsString appendFormat:@"%@", _sampleRate];
     } else {
-        [csdString appendFormat:@"AKControl(%@)", _sampleRate];
+        [inputsString appendFormat:@"AKControl(%@)", _sampleRate];
     }
-return csdString;
+    return inputsString;
 }
+
 
 - (NSString *)udoString {
     return @"\n"
@@ -96,5 +137,4 @@ return csdString;
     "xout      a0ut\n"
     "endop\n";
 }
-
 @end

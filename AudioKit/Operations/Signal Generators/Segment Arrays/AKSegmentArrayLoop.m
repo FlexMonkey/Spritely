@@ -25,6 +25,8 @@
         loopFrequency = frequency;
         segments = [[NSMutableArray alloc] init];
         [segments addObject:initialValue];
+        self.state = @"connectable";
+        self.dependencies = @[loopFrequency, initialValue];
     }
     return self;
 }
@@ -36,14 +38,19 @@
     [segments addObject:concavity];
     [segments addObject:duration];
     [segments addObject:value];
+    self.dependencies = [self.dependencies arrayByAddingObjectsFromArray:@[concavity, duration, value]];
 }
 
 - (NSString *)stringForCSD {
+    NSMutableArray *convertedSegments = [NSMutableArray array];
+    for (AKParameter *parameter in segments) {
+        [convertedSegments addObject:[NSString stringWithFormat:@"AKControl(%@)", parameter]];
+    }
     return [NSString stringWithFormat:
             @"%@ looptseg %@, 0, 0, %@",
             self,
             loopFrequency,
-            [segments componentsJoinedByString:@", "]];
+            [convertedSegments componentsJoinedByString:@", "]];
 }
 
 @end

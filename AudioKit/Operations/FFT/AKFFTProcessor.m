@@ -2,7 +2,7 @@
 //  AKFFTProcessor.m
 //  AudioKit
 //
-//  Auto-generated on 1/27/15.
+//  Auto-generated on 2/20/15.
 //  Copyright (c) 2015 Aurelius Prochazka. All rights reserved.
 //
 //  Implementation of Csound's pvstanal:
@@ -14,121 +14,191 @@
 
 @implementation AKFFTProcessor
 {
-    AKParameter * _functionTable;
+    AKParameter * _table;
 }
 
-- (instancetype)initWithFunctionTable:(AKParameter *)functionTable
-                       frequencyRatio:(AKParameter *)frequencyRatio
-                            timeRatio:(AKParameter *)timeRatio
-                            amplitude:(AKParameter *)amplitude
-                  functionTableOffset:(AKConstant *)functionTableOffset
-                            sizeOfFFT:(AKConstant *)sizeOfFFT
-                              hopSize:(AKConstant *)hopSize
-                             dbthresh:(AKConstant *)dbthresh
+- (instancetype)initWithTable:(AKParameter *)table
+               frequencyRatio:(AKParameter *)frequencyRatio
+                    timeRatio:(AKParameter *)timeRatio
+                    amplitude:(AKParameter *)amplitude
+                  tableOffset:(AKConstant *)tableOffset
+                    sizeOfFFT:(AKConstant *)sizeOfFFT
+                      hopSize:(AKConstant *)hopSize
+                     dbthresh:(AKConstant *)dbthresh
 {
     self = [super initWithString:[self operationName]];
     if (self) {
-        _functionTable = functionTable;
+        _table = table;
         _frequencyRatio = frequencyRatio;
         _timeRatio = timeRatio;
         _amplitude = amplitude;
-        _functionTableOffset = functionTableOffset;
+        _tableOffset = tableOffset;
         _sizeOfFFT = sizeOfFFT;
         _hopSize = hopSize;
         _dbthresh = dbthresh;
+        [self setUpConnections];
     }
     return self;
 }
 
-- (instancetype)initWithFunctionTable:(AKParameter *)functionTable
+- (instancetype)initWithTable:(AKParameter *)table
 {
     self = [super initWithString:[self operationName]];
     if (self) {
-        _functionTable = functionTable;
+        _table = table;
         // Default Values
         _frequencyRatio = akp(1);
         _timeRatio = akp(1);
         _amplitude = akp(1);
-        _functionTableOffset = akp(0);
+        _tableOffset = akp(0);
         _sizeOfFFT = akp(2048);
         _hopSize = akp(512);
         _dbthresh = akp(1);
+        [self setUpConnections];
     }
     return self;
 }
 
-+ (instancetype)WithFunctionTable:(AKParameter *)functionTable
++ (instancetype)WithTable:(AKParameter *)table
 {
-    return [[AKFFTProcessor alloc] initWithFunctionTable:functionTable];
+    return [[AKFFTProcessor alloc] initWithTable:table];
+}
+
+- (void)setFrequencyRatio:(AKParameter *)frequencyRatio {
+    _frequencyRatio = frequencyRatio;
+    [self setUpConnections];
 }
 
 - (void)setOptionalFrequencyRatio:(AKParameter *)frequencyRatio {
-    _frequencyRatio = frequencyRatio;
+    [self setFrequencyRatio:frequencyRatio];
 }
-- (void)setOptionalTimeRatio:(AKParameter *)timeRatio {
+
+- (void)setTimeRatio:(AKParameter *)timeRatio {
     _timeRatio = timeRatio;
+    [self setUpConnections];
 }
-- (void)setOptionalAmplitude:(AKParameter *)amplitude {
+
+- (void)setOptionalTimeRatio:(AKParameter *)timeRatio {
+    [self setTimeRatio:timeRatio];
+}
+
+- (void)setAmplitude:(AKParameter *)amplitude {
     _amplitude = amplitude;
+    [self setUpConnections];
 }
-- (void)setOptionalFunctionTableOffset:(AKConstant *)functionTableOffset {
-    _functionTableOffset = functionTableOffset;
+
+- (void)setOptionalAmplitude:(AKParameter *)amplitude {
+    [self setAmplitude:amplitude];
 }
-- (void)setOptionalSizeOfFFT:(AKConstant *)sizeOfFFT {
+
+- (void)setTableOffset:(AKConstant *)tableOffset {
+    _tableOffset = tableOffset;
+    [self setUpConnections];
+}
+
+- (void)setOptionalTableOffset:(AKConstant *)tableOffset {
+    [self setTableOffset:tableOffset];
+}
+
+- (void)setSizeOfFFT:(AKConstant *)sizeOfFFT {
     _sizeOfFFT = sizeOfFFT;
+    [self setUpConnections];
 }
-- (void)setOptionalHopSize:(AKConstant *)hopSize {
+
+- (void)setOptionalSizeOfFFT:(AKConstant *)sizeOfFFT {
+    [self setSizeOfFFT:sizeOfFFT];
+}
+
+- (void)setHopSize:(AKConstant *)hopSize {
     _hopSize = hopSize;
+    [self setUpConnections];
 }
-- (void)setOptionalDbthresh:(AKConstant *)dbthresh {
+
+- (void)setOptionalHopSize:(AKConstant *)hopSize {
+    [self setHopSize:hopSize];
+}
+
+- (void)setDbthresh:(AKConstant *)dbthresh {
     _dbthresh = dbthresh;
+    [self setUpConnections];
 }
 
-- (NSString *)stringForCSD {
+- (void)setOptionalDbthresh:(AKConstant *)dbthresh {
+    [self setDbthresh:dbthresh];
+}
+
+
+- (void)setUpConnections
+{
+    self.state = @"connectable";
+    self.dependencies = @[_table, _frequencyRatio, _timeRatio, _amplitude, _tableOffset, _sizeOfFFT, _hopSize, _dbthresh];
+}
+
+- (NSString *)inlineStringForCSD
+{
+    NSMutableString *inlineCSDString = [[NSMutableString alloc] init];
+    
+    [inlineCSDString appendString:@"pvstanal("];
+    [inlineCSDString appendString:[self inputsString]];
+    [inlineCSDString appendString:@")"];
+    
+    return inlineCSDString;
+}
+
+
+- (NSString *)stringForCSD
+{
     NSMutableString *csdString = [[NSMutableString alloc] init];
-
-    // Constant Values  
-    AKConstant *_wrap = akp(1);        
+    
     [csdString appendFormat:@"%@ pvstanal ", self];
-
-    if ([_timeRatio class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _timeRatio];
-    } else {
-        [csdString appendFormat:@"AKControl(%@), ", _timeRatio];
-    }
-
-    if ([_amplitude class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _amplitude];
-    } else {
-        [csdString appendFormat:@"AKControl(%@), ", _amplitude];
-    }
-
-    if ([_frequencyRatio class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _frequencyRatio];
-    } else {
-        [csdString appendFormat:@"AKControl(%@), ", _frequencyRatio];
-    }
-
-    if ([_functionTable class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _functionTable];
-    } else {
-        [csdString appendFormat:@"AKControl(%@), ", _functionTable];
-    }
-
-    if ([_wrap class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _wrap];
-    } else {
-        [csdString appendFormat:@"AKControl(%@), ", _wrap];
-    }
-
-    [csdString appendFormat:@"%@, ", _functionTableOffset];
-    
-    [csdString appendFormat:@"%@, ", _sizeOfFFT];
-    
-    [csdString appendFormat:@"%@, ", _hopSize];
-    
-    [csdString appendFormat:@"%@", _dbthresh];
+    [csdString appendString:[self inputsString]];
     return csdString;
+}
+
+- (NSString *)inputsString {
+    NSMutableString *inputsString = [[NSMutableString alloc] init];
+    
+    // Constant Values
+    AKConstant *_wrap = akp(1);
+    
+    if ([_timeRatio class] == [AKControl class]) {
+        [inputsString appendFormat:@"%@, ", _timeRatio];
+    } else {
+        [inputsString appendFormat:@"AKControl(%@), ", _timeRatio];
+    }
+    
+    if ([_amplitude class] == [AKControl class]) {
+        [inputsString appendFormat:@"%@, ", _amplitude];
+    } else {
+        [inputsString appendFormat:@"AKControl(%@), ", _amplitude];
+    }
+    
+    if ([_frequencyRatio class] == [AKControl class]) {
+        [inputsString appendFormat:@"%@, ", _frequencyRatio];
+    } else {
+        [inputsString appendFormat:@"AKControl(%@), ", _frequencyRatio];
+    }
+    
+    if ([_table class] == [AKControl class]) {
+        [inputsString appendFormat:@"%@, ", _table];
+    } else {
+        [inputsString appendFormat:@"AKControl(%@), ", _table];
+    }
+    
+    if ([_wrap class] == [AKControl class]) {
+        [inputsString appendFormat:@"%@, ", _wrap];
+    } else {
+        [inputsString appendFormat:@"AKControl(%@), ", _wrap];
+    }
+    
+    [inputsString appendFormat:@"%@, ", _tableOffset];
+    
+    [inputsString appendFormat:@"%@, ", _sizeOfFFT];
+    
+    [inputsString appendFormat:@"%@, ", _hopSize];
+    
+    [inputsString appendFormat:@"%@", _dbthresh];
+    return inputsString;
 }
 
 @end

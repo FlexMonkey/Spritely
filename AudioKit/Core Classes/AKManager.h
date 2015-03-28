@@ -11,12 +11,15 @@
 #import "AKEvent.h"
 #import "AKMidi.h"
 #import "AKSequence.h"
-#import "AKWeightedSumOfSinusoids.h"
-#import "AKLineSegments.h"
+#import "AKTable.h"
+
+#import "CsoundObj.h"
 
 /** The AKManager is a singleton class available to all controllers that need access to audio.
  */
 @interface AKManager : NSObject
+
+@property CsoundObj *engine;
 
 /// Determines whether or not AudioKit is available to send events to.
 @property (readonly) BOOL isRunning;
@@ -78,7 +81,11 @@
 /// Disable AudioInput
 - (void)disableAudioInput;
 
+//// Stop recording
 - (void)stopRecording;
+
+/// Start recording to a given URL
+/// @param url URL to save the recording at
 - (void)startRecordingToURL:(NSURL *)url;
 
 /// Enable MIDI
@@ -87,27 +94,8 @@
 /// Disable MIDI
 - (void)disableMidi;
 
-// Common tables required by many applications
-
-@property (nonatomic) AKWeightedSumOfSinusoids *standardSineWave;
-+ (AKWeightedSumOfSinusoids *)standardSineWave;
-@property int numberOfSineWaveReferences;
-
-@property (nonatomic) AKLineSegments *standardTriangleWave;
-+ (AKLineSegments *)standardTriangleWave;
-@property int numberOfTriangleWaveReferences;
-
-@property (nonatomic) AKLineSegments *standardSquareWave;
-+ (AKLineSegments *)standardSquareWave;
-@property int numberOfSquareWaveReferences;
-
-@property (nonatomic) AKLineSegments *standardSawtoothWave;
-+ (AKLineSegments *)standardSawtoothWave;
-@property int numberOfSawtoothWaveReferences;
-
-@property (nonatomic) AKLineSegments *standardReverseSawtoothWave;
-+ (AKLineSegments *)standardReverseSawtoothWave;
-@property int numberOfReverseSawtoothWaveReferences;
-
+/// Utilities
+/// @param binding The object that will be added to Csound's binding list
++ (void)addBinding:(id)binding;
 
 @end

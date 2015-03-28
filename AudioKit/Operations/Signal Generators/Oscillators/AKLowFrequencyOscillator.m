@@ -2,7 +2,8 @@
 //  AKLowFrequencyOscillator.m
 //  AudioKit
 //
-//  Auto-generated on 1/3/15.
+//  Auto-generated on 2/19/15.
+//  Customized by Aurelius Prochazka adding type helpers and more
 //  Copyright (c) 2015 Aurelius Prochazka. All rights reserved.
 //
 //  Implementation of Csound's lfo:
@@ -25,12 +26,14 @@
                            frequency:(AKParameter *)frequency
                            amplitude:(AKParameter *)amplitude
 {
+
     self = [super initWithString:[self operationName]];
     if (self) {
         _waveformType = waveFormType;
         _frequency = frequency;
         _amplitude = amplitude;
-    }
+        [self setUpConnections];
+}
     return self;
 }
 
@@ -42,6 +45,7 @@
         _waveformType = [AKLowFrequencyOscillator waveformTypeForSine];
         _frequency = akp(110);
         _amplitude = akp(1);
+        [self setUpConnections];
     }
     return self;
 }
@@ -51,35 +55,75 @@
     return [[AKLowFrequencyOscillator alloc] init];
 }
 
+
 - (void)setOptionalWaveformType:(AKConstant *)waveformType {
     _waveformType = waveformType;
 }
-- (void)setOptionalFrequency:(AKParameter *)frequency {
+
+- (void)setFrequency:(AKParameter *)frequency {
     _frequency = frequency;
-}
-- (void)setOptionalAmplitude:(AKParameter *)amplitude {
-    _amplitude = amplitude;
+    [self setUpConnections];
 }
 
-- (NSString *)stringForCSD {
+- (void)setOptionalFrequency:(AKParameter *)frequency {
+    [self setFrequency:frequency];
+}
+
+- (void)setAmplitude:(AKParameter *)amplitude {
+    _amplitude = amplitude;
+    [self setUpConnections];
+}
+
+- (void)setOptionalAmplitude:(AKParameter *)amplitude {
+    [self setAmplitude:amplitude];
+}
+
+
+- (void)setUpConnections
+{
+    self.state = @"connectable";
+    self.dependencies = @[_waveformType, _frequency, _amplitude];
+}
+
+- (NSString *)inlineStringForCSD
+{
+    NSMutableString *inlineCSDString = [[NSMutableString alloc] init];
+
+    [inlineCSDString appendString:@"lfo("];
+    [inlineCSDString appendString:[self inputsString]];
+    [inlineCSDString appendString:@")"];
+
+    return inlineCSDString;
+}
+
+
+- (NSString *)stringForCSD
+{
     NSMutableString *csdString = [[NSMutableString alloc] init];
-    
+
     [csdString appendFormat:@"%@ lfo ", self];
+    [csdString appendString:[self inputsString]];
+    return csdString;
+}
+
+- (NSString *)inputsString {
+    NSMutableString *inputsString = [[NSMutableString alloc] init];
+
     
     if ([_amplitude class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _amplitude];
+        [inputsString appendFormat:@"%@, ", _amplitude];
     } else {
-        [csdString appendFormat:@"AKControl(%@), ", _amplitude];
+        [inputsString appendFormat:@"AKControl(%@), ", _amplitude];
     }
-    
+
     if ([_frequency class] == [AKControl class]) {
-        [csdString appendFormat:@"%@, ", _frequency];
+        [inputsString appendFormat:@"%@, ", _frequency];
     } else {
-        [csdString appendFormat:@"AKControl(%@), ", _frequency];
+        [inputsString appendFormat:@"AKControl(%@), ", _frequency];
     }
-    
-    [csdString appendFormat:@"%@", _waveformType];
-    return csdString;
+
+    [inputsString appendFormat:@"%@", _waveformType];
+    return inputsString;
 }
 
 @end

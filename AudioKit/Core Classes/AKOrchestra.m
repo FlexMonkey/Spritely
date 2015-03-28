@@ -16,6 +16,7 @@
     int sampleRate;
     int samplesPerControlPeriod;
     NSMutableSet *udoFiles;
+    CsoundObj *csound;
 }
 
 // -----------------------------------------------------------------------------
@@ -26,6 +27,9 @@
 {
     self = [super init];
     if (self) {
+        
+        _userDefinedOperations = [[NSMutableSet alloc] init];
+        
         NSString *path = [[NSBundle mainBundle] pathForResource:@"AudioKit" ofType:@"plist"];
         NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:path];
         
@@ -34,17 +38,16 @@
         samplesPerControlPeriod = 64;
         _numberOfChannels = 2;
         _zeroDBFullScaleValue = 1.0f;
-
+        
         if (dict) {
             sampleRate = [[dict objectForKey:@"Sample Rate"] intValue];
             samplesPerControlPeriod = [[dict objectForKey:@"Samples Per Control Period"] intValue];
             _numberOfChannels = [[dict objectForKey:@"Number Of Channels"] intValue];
-            _zeroDBFullScaleValue = [[dict objectForKey:@"Number Of Channels"] floatValue];
+            _zeroDBFullScaleValue = [[dict objectForKey:@"Zero dB Full Scale Value"] floatValue];
         }
         
         udoFiles = [[NSMutableSet alloc] init];
-        _instruments = [[NSMutableArray alloc] init];
-        _functionTables = [[NSMutableSet alloc] init];
+        csound = [[AKManager sharedManager] engine];
     }
     return self;
 }
@@ -52,7 +55,6 @@
 // -----------------------------------------------------------------------------
 #  pragma mark - Starting and Testing
 // -----------------------------------------------------------------------------
-
 
 + (void)start
 {
@@ -76,117 +78,81 @@
 }
 
 // -----------------------------------------------------------------------------
-#  pragma mark - Collections
+#  pragma mark - Csound Implementation
 // -----------------------------------------------------------------------------
 
 + (void)addInstrument:(AKInstrument *)instrument
 {
+    [[AKManager sharedManager] enableAudioInput];
+    
+    [AKOrchestra start];
+    while (![[AKManager sharedManager] isRunning]) {
+        // do nothing
+    }
     [[[AKManager sharedManager] orchestra] addInstrument:instrument];
 }
 
-- (void)addInstrument:(AKInstrument *)newInstrument
++ (void)updateInstrument:(AKInstrument *)instrument
 {
-    [_instruments addObject:newInstrument];
-    [newInstrument joinOrchestra:self];
+    [self addInstrument:instrument];
 }
 
-// -----------------------------------------------------------------------------
-#  pragma mark - Csound Implementation
-// -----------------------------------------------------------------------------
+- (void)addInstrument:(AKInstrument *)instrument
+{
+    NSMutableString *instrumentString = [NSMutableString string];
+    
+    [instrumentString appendString:[NSString stringWithFormat:@"\n\n;=== %@ ===\n\n", [instrument uniqueName] ]];
+    
+    [instrumentString appendString:@";--- Global Parameters ---\n"];
+    
+    for (AKParameter *globalParameter in instrument.globalParameters) {
+        [instrumentString appendString:@"\n"];
+        if ([globalParameter class] == [AKStereoAudio class]) {
+            [instrumentString appendString:[NSString stringWithFormat:@"%@ init 0, 0\n", globalParameter]];
+        } else {
+            [instrumentString appendString:[NSString stringWithFormat:@"%@ init 0\n", globalParameter]];
+        }
+        [instrumentString appendString:@"\n"];
+    }
+    
+    NSString *stringForCSD = [instrument stringForCSD];
+    if (instrument.userDefinedOperations.count > 0) {
+        [instrumentString appendString:@"\n;--- User-defined operations ---\n"];
+        for (NSString *udo in instrument.userDefinedOperations) {
+            if (![[[[AKManager sharedManager] orchestra] userDefinedOperations] containsObject:udo]) {
+                [instrumentString appendFormat:@"%@\n", udo];
+                [[[[AKManager sharedManager] orchestra] userDefinedOperations] addObject:udo];
+            }
+        }
+    }
+    
+    [instrumentString appendFormat:@"instr %i\n", [instrument instrumentNumber]];
+    [instrumentString appendString:[NSString stringWithFormat:@"%@\n", stringForCSD]];
+    [instrumentString appendString:@"endin\n"];
+    
+    if ([[AKManager sharedManager] isLogging]) {
+        NSLog(@"%@", instrumentString);
+    }
+    
+    [csound updateOrchestra:instrumentString];
+    
+    // Update Bindings
+    for (AKInstrumentProperty *instrumentProperty in [instrument properties]) {
+        [csound addBinding:(AKInstrumentProperty<CsoundBinding> *)instrumentProperty];
+    }
+}
 
 - (NSString *) stringForCSD
-{ 
-    NSMutableString *s = [NSMutableString stringWithString:@""];
-    
-    [s appendString:@";=== HEADER ===\n"];
-    [s appendString:[NSString stringWithFormat:
-                     @"nchnls = %d \n"
-                     @"sr     = %d \n"
-                     @"0dbfs  = %g \n"
-                     @"ksmps  = %d \n",
-                     _numberOfChannels,
-                     sampleRate, 
-                     _zeroDBFullScaleValue,
-                     samplesPerControlPeriod]];
-    [s appendString:@"\n"];
-    
-    [s appendString:@";=== GLOBAL PARAMETERS ===\n"];
-    if ([[AKManager sharedManager] numberOfSineWaveReferences] > 0) {
-        [s appendString:[[AKManager standardSineWave] stringForCSD]];
-    }
-    [s appendString:@"\n"];
-    if ([[AKManager sharedManager] numberOfTriangleWaveReferences] > 0) {
-        [s appendString:[[AKManager standardTriangleWave] stringForCSD]];
-    }
-    [s appendString:@"\n"];
-    if ([[AKManager sharedManager] numberOfSquareWaveReferences ] > 0) {
-        [s appendString:[[AKManager standardSquareWave] stringForCSD]];
-    }
-    [s appendString:@"\n"];
-    if ([[AKManager sharedManager] numberOfSawtoothWaveReferences] > 0) {
-        [s appendString:[[AKManager standardSawtoothWave] stringForCSD]];
-    }
-    [s appendString:@"\n"];
-    if ([[AKManager sharedManager] numberOfReverseSawtoothWaveReferences] > 0) {
-        [s appendString:[[AKManager standardReverseSawtoothWave] stringForCSD]];
-    }
-    [s appendString:@"\n"];
-    for (AKFunctionTable *functionTable in _functionTables) {
-        [s appendString:[functionTable stringForCSD]];
-        [s appendString:@"\n"];
-    }
-    for ( AKInstrument *i in _instruments) {
-        for (AKFunctionTable *functionTable in i.functionTables) {
-            [s appendString:[functionTable stringForCSD]];
-            [s appendString:@"\n"];
-        } 
-    }
-    for ( AKInstrument *i in _instruments) {
-        for (AKParameter *globalParameter in i.globalParameters) {
-            [s appendString:@"\n"];
-            if ([globalParameter class] == [AKStereoAudio class]) {
-                [s appendString:[NSString stringWithFormat:@"%@ init 0, 0\n", globalParameter]];
-            } else {
-                [s appendString:[NSString stringWithFormat:@"%@ init 0\n", globalParameter]];
-            }
-            [s appendString:@"\n"];
-        }
-    }
-    [s appendString:@"\n"];
-    
-    
-    [s appendString:@";=== USER-DEFINED OPCODES ===\n"];
-    for ( AKInstrument *i in _instruments) {
-        for (AKParameter *udo in i.userDefinedOperations) {
-            NSString *newUDOString = [udo udoString];
-            for (AKParameter *udo in udoFiles) {
-                if ([newUDOString isEqualToString:[udo udoString]]) {
-                    newUDOString  = @"";
-                }
-            }
-            if (![newUDOString isEqualToString:@""]) {
-                [udoFiles addObject:udo];
-            }
-        }
-    }
-    for (AKParameter *udo in udoFiles) {
-        [s appendString:@"\n"];
-        [s appendString:[udo udoString]];
-        [s appendString:@"\n"];
-    }
-    [s appendString:@"\n"];
-
-    [s appendString:@";=== INSTRUMENTS ===\n"];
-    for ( AKInstrument *i in _instruments) {
-        [s appendString:[NSString stringWithFormat:@"\n;--- %@ ---\n\n", [i uniqueName] ]];
-        [s appendFormat:@"instr %i\n", [i instrumentNumber]];
-        [s appendString:[NSString stringWithFormat:@"%@\n",[i stringForCSD]]];
-        [s appendString:@"endin\n"];
-    }
-    [s appendString:@"\n"];
-    
-    return s;
+{
+    return [NSString stringWithFormat:
+            @"nchnls = %d \n"
+            @"sr     = %d \n"
+            @"0dbfs  = %g \n"
+            @"ksmps  = %d \n",
+            _numberOfChannels,
+            sampleRate,
+            _zeroDBFullScaleValue,
+            samplesPerControlPeriod];
 }
-
 
 @end

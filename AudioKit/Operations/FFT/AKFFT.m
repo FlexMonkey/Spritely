@@ -17,10 +17,13 @@
     AKConstant *iWinType;
 }
 
++ (AKConstant *)hammingWindow { return akp(0);  }
++ (AKConstant *)hannWindow    { return akp(1);  }
+
 - (instancetype)initWithInput:(AKParameter *)audioSource
                       fftSize:(AKConstant *)fftSize
                       overlap:(AKConstant *)overlap
-                   windowType:(AKFFTWindowType)windowType
+                   windowType:(AKConstant *)windowType
              windowFilterSize:(AKConstant *)windowSize
 
 {
@@ -29,8 +32,12 @@
         aIn = audioSource;
         iFFTSize = fftSize;
         iOverlap = overlap;
-        iWinType = akpi(windowType);
+        iWinType = windowType;
         iWinSize = windowSize;
+        
+        self.state = @"connectable";
+        self.dependencies = @[aIn];
+
     }
     return self;
 }

@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class AKInstrument;
-@class AKUserDefinedOperation;
 @class AKEvent;
 @class AKSequence;
 @class AKParameter;
@@ -18,17 +17,15 @@
  */
 @interface AKOrchestra : NSObject
 
+/** All UDOs that are required by the instrument are stored here and declared before any
+ instrument blocks. */
+@property (nonatomic, strong) NSMutableSet *userDefinedOperations;
+
 /// Determines the value from which to scale all other amplitudes
 @property (nonatomic, assign) float zeroDBFullScaleValue;
 
 /// The number of channels, ie. mono=1, stereo=2, hexaphonic=6.  Can affect both output and input.
 @property (readonly) int numberOfChannels;
-
-/// All the instruments in the orchestra, in order they need to be created.
-@property NSMutableArray *instruments;
-
-/// Global function tables not added by a specific instrument
-@property NSMutableSet *functionTables;
 
 /// Start the orchestra
 + (void)start;
@@ -44,11 +41,15 @@
 /// @param instrument Instrument to add to the orchestra
 + (void)addInstrument:(AKInstrument *)instrument;
 
-/// Adds an instrument to orchestra and informs the instrument which orchestra it now belongs to.
-/// @param newInstrument Instrument that will be added to the orchestra.
-- (void)addInstrument:(AKInstrument *)newInstrument;
+/// Replace an instrument with the new parameters
+/// @param instrument Instrument to respecify in the orchestra
++ (void)updateInstrument:(AKInstrument *)instrument;
 
-// @returns The complete CSD File representation for the orchestra including UDOs and instruments.
+/// Adds an instrument to orchestra and informs the instrument which orchestra it now belongs to.
+/// @param instrument Instrument that will be added to the orchestra.
+- (void)addInstrument:(AKInstrument *)instrument;
+
+// @returns The initial CSD File representation for the orchestra including UDOs.
 - (NSString *)stringForCSD;
 
 @end

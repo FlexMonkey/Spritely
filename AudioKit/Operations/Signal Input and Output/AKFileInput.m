@@ -27,6 +27,7 @@
         _startTime = akp(0);
         isNormalized = NO;
         normalization = 1;
+        [self setUpConnections];
     }
     return self;
 }
@@ -40,15 +41,27 @@
         _filename = fileName;
         _speed = speed;
         _startTime = startTime;
+        [self setUpConnections];
     }
     return self;
 }
 
-- (void)setOptionalSpeed:(AKParameter *)speed {
+- (void)setSpeed:(AKParameter *)speed {
     _speed = speed;
+    [self setUpConnections];
 }
-- (void)setOptionalStartTime:(AKConstant *)startTime {
+
+- (void)setOptionalSpeed:(AKParameter *)speed {
+    [self setSpeed:speed];
+}
+
+- (void)setStartTime:(AKConstant *)startTime {
     _startTime = startTime;
+    [self setUpConnections];
+}
+
+- (void)setOptionalStartTime:(AKConstant *)startTime {
+    [self setStartTime:startTime];
 }
 
 - (void)normalizeTo:(float)maximumAmplitude {
@@ -56,6 +69,11 @@
     normalization = maximumAmplitude;
 }
 
+- (void)setUpConnections
+{
+    self.state = @"connectable";
+    self.dependencies = @[_speed, _startTime];
+}
 
 - (NSString *)stringForCSD
 {
@@ -77,6 +95,5 @@
     }
     return csdString;
 }
-
 
 @end

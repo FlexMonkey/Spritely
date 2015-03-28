@@ -35,6 +35,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     var newInstrumentShapeNode: InstrumentShapeNode?
     var transientCreatingBar: BarShapeNode?
     
+    let rollingWaveformPlot = AKAudioOutputRollingWaveformPlot()
+    
     override init()
     {
         super.init()
@@ -92,6 +94,9 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        AKManager.addBinding(rollingWaveformPlot)
+        view.addSubview(rollingWaveformPlot)
 
         skView.addGestureRecognizer(longPressGestureRecogniser)
         
@@ -104,6 +109,7 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
         rotateGestureRecogniser.delegate = self
         skView.addGestureRecognizer(rotateGestureRecogniser)
 
+        skView.alpha = 0.95
         view.addSubview(skView)
 
         skView.ignoresSiblingOrder = true
@@ -435,6 +441,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
 
         skView.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
         scene.size = CGSize(width: view.frame.width, height: sceneHeight)
+
+        rollingWaveformPlot.frame = CGRect(x: 0, y: topMargin + toolbarHeight, width: view.frame.width, height: sceneHeight)
         
         instrumentsToolbar.frame = CGRect(x: 0, y: topMargin, width: view.frame.width, height: toolbarHeight)
     }
