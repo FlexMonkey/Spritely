@@ -31,10 +31,10 @@ class InstrumentShapeNode: SKShapeNode
         
         switch instrument
         {
-        case Instruments.vibes:
+        case Instruments.marimba:
             returnPath = CGPathCreateWithRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
             
-        case Instruments.marimba:
+        case Instruments.vibes:
             returnPath = CGPathCreateWithEllipseInRect(CGRect(x: -20, y: -20, width: 40, height: 40), nil)
             
         case Instruments.mandolin:
