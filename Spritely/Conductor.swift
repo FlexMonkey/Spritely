@@ -17,7 +17,6 @@ class Conductor {
         AKOrchestra.addInstrument(marimbaInstrument)
         AKOrchestra.addInstrument(vibesInstrument)
         AKOrchestra.addInstrument(mandolinInstrument)
-        AKOrchestra.start()
     }
     
     func play(#frequency: Float, amplitude: Float, instrument: Instruments)
