@@ -1914,16 +1914,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/AudioKit/Libraries/OSX/csound-OSX",
-					"$(PROJECT_DIR)/AudioKit/Platforms/OSX",
-				);
 				INFOPLIST_FILE = Spritely/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/AudioKit/Libraries/iOS/csound-iOS/libs",
 					"$(PROJECT_DIR)/AudioKit/Platforms/iOS/libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1936,16 +1930,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/AudioKit/Libraries/OSX/csound-OSX",
-					"$(PROJECT_DIR)/AudioKit/Platforms/OSX",
-				);
 				INFOPLIST_FILE = Spritely/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/AudioKit/Libraries/iOS/csound-iOS/libs",
 					"$(PROJECT_DIR)/AudioKit/Platforms/iOS/libs",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
