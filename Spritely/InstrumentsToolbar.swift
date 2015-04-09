@@ -52,9 +52,9 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent)
     {
-        let locationInView = touches.anyObject()?.locationInView(self)
+        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
         
         if let touchX = locationInView?.x
         {
@@ -62,9 +62,9 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent)
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)
     {
-        let locationInView = touches.anyObject()?.locationInView(self)
+        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
         
         if let selectedInstrumentShapeNode = selectedInstrumentShapeNode
         {
@@ -83,14 +83,14 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!)
+    override func touchesCancelled(touches: Set<NSObject>, withEvent event: UIEvent!)
     {
          selectedInstrumentShapeNode = nil
     }
     
-    override func touchesEnded(touches: NSSet, withEvent event: UIEvent)
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent)
     {
-        let locationInView = touches.anyObject()?.locationInView(self)
+        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
         
         if locationInView?.x < 50 || locationInView?.x > frame.width - 50
         {
@@ -111,7 +111,7 @@ class InstrumentsToolbar: SKView
     {
         selectedInstrumentShapeNode = nil
         
-        let children = scene?.children.filter({ $0 is InstrumentShapeNode }) as [InstrumentShapeNode]
+        let children = scene?.children.filter({ $0 is InstrumentShapeNode }) as! [InstrumentShapeNode]
         
         for node in children
         {

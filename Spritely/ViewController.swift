@@ -26,7 +26,6 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     let instrumentCategoryBitMask: UInt32 = 0xb10001
     let barCategoryBitMask: UInt32 = 0b001111
     
-    let longPressGestureRecogniser: UILongPressGestureRecognizer!
     let conductor = Conductor()
     
     let newInstrumentAlertController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -38,22 +37,13 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     let rollingWaveformPlot = AKAudioOutputRollingWaveformPlot()
     let blurOverlay = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark))
     
-    override init()
-    {
-        super.init()
-        
-        createNewInstrumentActionSheet()
-        
-        longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
-    }
-
     required init(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         
         createNewInstrumentActionSheet()
         
-        longPressGestureRecogniser = UILongPressGestureRecognizer(target: {return self}(), action: "longPressHandler:")
+        
     }
     
     func createNewInstrumentActionSheet()
@@ -83,11 +73,11 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
             {
                 newSelection.selected = true
                 
-                view.removeGestureRecognizer(longPressGestureRecogniser)
+                // view.removeGestureRecognizer(longPressGestureRecogniser)
             }
             else
             {
-                view.addGestureRecognizer(longPressGestureRecogniser)
+                // view.addGestureRecognizer(longPressGestureRecogniser) 
             }
         }
     }
@@ -101,6 +91,8 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
         
         view.addSubview(blurOverlay)
 
+        let longPressGestureRecogniser = UILongPressGestureRecognizer(target: self, action: "longPressHandler:")
+    
         skView.addGestureRecognizer(longPressGestureRecogniser)
         
         let panGestureRecogniser = UIPanGestureRecognizer(target: self, action: "panHandler:")
@@ -196,12 +188,12 @@ class ViewController: UIViewController, SKPhysicsContactDelegate, BarShapeNodeDe
     
     func getInstrumentShapeNodeById(id: String) -> InstrumentShapeNode?
     {
-        return scene.children.filter({ $0 is InstrumentShapeNode && ($0 as InstrumentShapeNode).id == id })[0] as? InstrumentShapeNode
+        return scene.children.filter({ $0 is InstrumentShapeNode && ($0 as! InstrumentShapeNode).id == id })[0] as? InstrumentShapeNode
     }
     
     func populateToolbar()
     {
-        instrumentsToolbar.instrumentShapeNodes = scene.children.filter({ $0 is InstrumentShapeNode }) as [InstrumentShapeNode]
+        instrumentsToolbar.instrumentShapeNodes = scene.children.filter({ $0 is InstrumentShapeNode }) as! [InstrumentShapeNode]
     }
     
     func cancelBallCreation(value : UIAlertAction!) -> Void
