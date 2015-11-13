@@ -44,7 +44,7 @@ extension CGMutablePath
 
 extension Float
 {
-    func angleToPoint(#radius: Float) -> CGPoint
+    func angleToPoint(radius radius: Float) -> CGPoint
     {
         let xx = (sin(self.toRadians()) * radius)
         let yy = (cos(self.toRadians()) * radius)
@@ -65,9 +65,9 @@ extension Float
 
 extension SKShapeNode
 {
-    func pulse(#strokeColor: UIColor, fillColor: UIColor = UIColor.clearColor())
+    func pulse(strokeColor strokeColor: UIColor, fillColor: UIColor = UIColor.clearColor())
     {
-        let newNode = SKShapeNode(path: self.path)
+        let newNode = SKShapeNode(path: self.path!)
         
         newNode.strokeColor = strokeColor
         newNode.fillColor = fillColor

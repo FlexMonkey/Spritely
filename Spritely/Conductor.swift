@@ -5,6 +5,7 @@
 //  Created by Aurelius Prochazka on 3/8/15.
 //  Copyright (c) 2015 Simon Gladman. All rights reserved.
 //
+import AudioKit
 
 class Conductor {
 
@@ -19,7 +20,7 @@ class Conductor {
         AKOrchestra.addInstrument(mandolinInstrument)
     }
     
-    func play(#frequency: Float, amplitude: Float, instrument: Instruments)
+    func play(frequency frequency: Float, amplitude: Float, instrument: Instruments)
     {
         let barNote = BarNote(frequency: frequency, amplitude: amplitude)
         barNote.duration.value = 3.0

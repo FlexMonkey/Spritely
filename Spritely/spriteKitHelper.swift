@@ -10,7 +10,7 @@ import SpriteKit
 
 struct SpriteKitHelper
 {
-    static func createWalls(#view: UIView, scene: SKScene, floorCategoryBitMask: UInt32)
+    static func createWalls(view view: UIView, scene: SKScene, floorCategoryBitMask: UInt32)
     {
         let leftWall = SKShapeNode(rectOfSize: CGSize(width: 2, height: view.frame.height))
         leftWall.position = CGPoint(x: -2, y: view.frame.height / 2)

@@ -9,3 +9,7 @@ build/
 *.xccheckout
 project.xcworkspace/
 xcuserdata/
+.DS_Store
+
+
+Pods/
