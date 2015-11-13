@@ -41,7 +41,7 @@ class InstrumentsToolbar: SKView
             
             for instrumentShape in instrumentShapeNodes
             {
-                let newInstrumentShape = InstrumentShapeNode(path: instrumentShape.path)
+                let newInstrumentShape = InstrumentShapeNode(path: instrumentShape.path!)
                 newInstrumentShape.id = instrumentShape.id
                 newInstrumentShape.strokeColor = instrumentShape.strokeColor
                 
@@ -52,9 +52,9 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent)
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
+        let locationInView:CGPoint? = touches.first!.locationInView(self)
         
         if let touchX = locationInView?.x
         {
@@ -62,9 +62,9 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent)
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
+        let locationInView:CGPoint? = touches.first!.locationInView(self)
         
         if let selectedInstrumentShapeNode = selectedInstrumentShapeNode
         {
@@ -83,14 +83,14 @@ class InstrumentsToolbar: SKView
         }
     }
     
-    override func touchesCancelled(touches: Set<NSObject>, withEvent event: UIEvent!)
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
     {
          selectedInstrumentShapeNode = nil
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent)
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        let locationInView:CGPoint? = (event.allTouches()?.first as! UITouch).locationInView(self)
+        let locationInView:CGPoint? = touches.first!.locationInView(self)
         
         if locationInView?.x < 50 || locationInView?.x > frame.width - 50
         {
@@ -136,8 +136,8 @@ class InstrumentsToolbar: SKView
 
 protocol InstrumentsToolbarDelegate
 {
-    func instrumentShapeNodeMoved(#instrumentId: String, newX: CGFloat)
+    func instrumentShapeNodeMoved(instrumentId instrumentId: String, newX: CGFloat)
     
-    func instrumentShapeNodeDeleted(#instrumentId: String)
+    func instrumentShapeNodeDeleted(instrumentId instrumentId: String)
 }
 

@@ -47,7 +47,7 @@ class BarShapeNode: SKShapeNode
         }
     }
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent)
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
         if let delegate = delegate
         {
@@ -55,16 +55,14 @@ class BarShapeNode: SKShapeNode
         }
     }
     
-    override func touchesCancelled(touches: Set<NSObject>, withEvent event: UIEvent!)
-    {
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         if let delegate = delegate
         {
             delegate.barShapeNodeSelected(nil)
         }
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent)
-    {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if let delegate = delegate
         {
             delegate.barShapeNodeSelected(nil)
